@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SATU GameHub — Suka</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+      :root { --bg:#160c0a; --panel:#241512; --line:#3a221b; --orange:#ff6900; --text:#f6ece5; --dim:#c9b3a8; --faint:#8a6f65; }
+      * { box-sizing:border-box; }
+      body { margin:0; min-height:100vh; background:radial-gradient(circle at 85% -10%,rgba(255,105,0,.18),transparent 45%),var(--bg); color:var(--text); font-family:Inter,Arial,sans-serif; }
+      .page { max-width:1200px; margin:auto; padding:28px 24px 60px; }
+      header { display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:42px; }
+      .brand { display:flex; align-items:center; gap:12px; font-weight:700; font-size:18px; }
+      .brand-icon { width:42px; height:42px; border-radius:12px; display:grid; place-items:center; background:linear-gradient(135deg,var(--orange),#9e3a31); }
+      nav { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+      nav a, nav button { color:var(--dim); text-decoration:none; border:1px solid transparent; border-radius:10px; background:transparent; padding:10px 14px; font:inherit; cursor:pointer; }
+      nav a:hover, nav a.active, nav button:hover { color:var(--text); background:rgba(255,105,0,.12); border-color:rgba(255,105,0,.35); }
+      h1 { margin:0; font-size:30px; }
+      .subtitle { color:var(--faint); margin:8px 0 26px; }
+      .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:20px; }
+      .card { overflow:hidden; border:1px solid var(--line); border-radius:16px; background:var(--panel); }
+      .card img, .empty-image { width:100%; height:150px; object-fit:cover; display:block; }
+      .empty-image { display:grid; place-items:center; background:linear-gradient(135deg,#3a1a4d,#1a0f2e); font-size:42px; }
+      .body { padding:16px; }
+      .major { display:inline-block; padding:4px 9px; border-radius:999px; background:rgba(255,105,0,.18); color:#ffb27a; font-size:11px; font-weight:700; }
+      h2 { margin:11px 0 7px; font-size:17px; }
+      .desc { color:var(--dim); font-size:13px; line-height:1.55; min-height:40px; }
+      .stats { color:#ff8a33; font-size:12px; margin-top:13px; }
+      .empty { border:1px dashed var(--line); border-radius:16px; padding:50px 20px; text-align:center; color:var(--faint); }
+      .empty strong { display:block; color:var(--text); font-size:18px; margin-bottom:8px; }
+      @media (max-width:650px) { header { align-items:flex-start; flex-direction:column; } }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>
+        <div class="brand"><div class="brand-icon">🎮</div><span>SATU GameHub</span></div>
+        <nav id="nav"></nav>
+      </header>
+      <main>
+        <h1>♡ Karya yang Disukai</h1>
+        <p class="subtitle">Koleksi karya yang kamu beri like.</p>
+        <div id="content"></div>
+      </main>
+    </div>
+    <script>
+      async function loadLikedWorks() {
+        const nav = document.getElementById("nav");
+        nav.innerHTML = '<a href="/index.html">🏠 Dashboard</a><a class="active" href="/suka.html">♥ Suka</a><button id="logout" type="button">↪ Logout</button>';
+        try {
+          const meResponse = await fetch("/api/auth/me");
+          if (!meResponse.ok) throw new Error("Session tidak valid.");
+          const me = await meResponse.json();
+          if (me.username?.toLowerCase() === "leon") {
+            nav.insertAdjacentHTML("beforeend", '<a href="/tambah-game.html">＋ Tambah Karya</a>');
+          }
+          const response = await fetch("/api/works");
+          const works = await response.json();
+          if (!response.ok) throw new Error(works.message || "Karya gagal dimuat.");
+          const liked = works.filter((work) => work.liked);
+          const content = document.getElementById("content");
+          if (!liked.length) {
+            content.innerHTML = '<div class="empty"><strong>Belum ada karya yang disukai</strong>Klik tombol like pada karya di dashboard untuk menyimpannya di sini.</div>';
+            return;
+          }
+          content.innerHTML = `<div class="grid">${liked.map((work) => `
+            <article class="card">
+              ${work.images?.[0] ? `<img src="${work.images[0]}" alt="${work.title}" />` : '<div class="empty-image">🎮</div>'}
+              <div class="body">
+                <span class="major">${work.major}</span>
+                <h2>${work.title}</h2>
+                <div class="desc">${work.description}</div>
+                <div class="stats">♥ ${work.likes} suka · ▶ ${work.play_count || 0} dimainkan</div>
+              </div>
+            </article>`).join("")}</div>`;
+        } catch (error) {
+          Swal.fire({ icon:"error", title:"Gagal memuat Suka", text:error.message, confirmButtonColor:"#ff6900", background:"#241512", color:"#f6ece5" });
+        }
+      }
+      document.addEventListener("click", async (event) => {
+        if (event.target.id !== "logout") return;
+        const result = await Swal.fire({ icon:"question", title:"Logout dari GameHub?", showCancelButton:true, confirmButtonText:"Logout", cancelButtonText:"Batal", confirmButtonColor:"#ff6900", background:"#241512", color:"#f6ece5" });
+        if (!result.isConfirmed) return;
+        await fetch("/api/auth/logout", { method:"POST" });
+        window.location.href = "/login.html";
+      });
+      loadLikedWorks();
+    </script>
+  </body>
+</html>

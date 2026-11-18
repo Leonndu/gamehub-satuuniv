@@ -1,0 +1,171 @@
+PANDUAN HOSTING SATU GAMEHUB DI CPANEL
+======================================
+
+Project ini menggunakan Next.js, Node.js, dan MySQL.
+
+1. SIAPKAN FILE PROJECT
+-----------------------
+Upload seluruh isi folder satu-gamehub ke hosting.
+
+Contoh lokasi:
+/home/USERNAME/satu-gamehub
+
+Pastikan file/folder berikut ikut ter-upload:
+- package.json
+- package-lock.json
+- server.js
+- database.sql
+- app/
+- lib/
+- public/
+
+Jangan upload folder node_modules jika ukuran terlalu besar. Folder tersebut
+bisa dibuat ulang dengan perintah npm install di hosting.
+
+
+2. BUAT DATABASE MYSQL
+----------------------
+1. Buka cPanel.
+2. Buka MySQL Databases.
+3. Buat database baru, contoh: username_satu_gamehub.
+4. Buat user database dan password.
+5. Hubungkan user ke database dengan ALL PRIVILEGES.
+6. Buka phpMyAdmin.
+7. Pilih database yang baru dibuat.
+8. Klik Import.
+9. Pilih file database.sql.
+10. Klik Go/Kirim.
+
+Catatan:
+Nama database di hosting biasanya memiliki prefix username cPanel.
+Contoh: username_satu_gamehub, bukan hanya satu_gamehub.
+
+
+3. BUAT FILE ENVIRONMENT
+------------------------
+Buat file bernama .env di folder utama project.
+
+Isi contoh:
+
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=username_dbuser
+DB_PASSWORD=password_database
+DB_NAME=username_satu_gamehub
+NODE_ENV=production
+
+Sesuaikan username, password, dan nama database dengan database hosting.
+
+
+4. BUAT NODE.JS APPLICATION DI CPANEL
+-------------------------------------
+Buka menu Setup Node.js App lalu buat aplikasi baru.
+
+Isi:
+
+Node.js version:
+20.x atau lebih baru
+
+Application mode:
+Production
+
+NODE_ENV:
+production
+
+Application root:
+satu-gamehub
+
+Application URL:
+https://domainanda.com
+
+Application startup file:
+server.js
+
+Jika project berada di /home/USERNAME/satu-gamehub, maka Application root
+harus menunjuk ke folder satu-gamehub tersebut.
+
+
+5. INSTALL DEPENDENCY DAN BUILD
+-------------------------------
+Buka Terminal cPanel, lalu jalankan:
+
+cd /home/USERNAME/satu-gamehub
+npm install
+npm run build
+
+Ganti USERNAME dengan username cPanel Anda.
+
+
+6. FOLDER UPLOAD GAMBAR
+-----------------------
+Buat folder berikut jika belum ada:
+
+public/uploads
+
+Folder ini digunakan untuk menyimpan gambar game/karya.
+Pastikan folder tersebut memiliki izin tulis untuk aplikasi.
+
+
+7. JALANKAN APLIKASI
+--------------------
+Kembali ke Setup Node.js App di cPanel.
+
+Klik Restart Application.
+
+Kemudian buka:
+
+https://domainanda.com/login.html
+
+
+8. TEST FITUR
+-------------
+1. Buka halaman register.
+2. Buat akun.
+3. Login.
+4. Login sebagai username leon untuk melihat menu Tambah Karya.
+5. Tambahkan game.
+6. Cek game tampil di dashboard.
+7. Coba like, komentar, dan tombol Main Sekarang.
+
+
+9. JIKA MUNCUL ERROR
+--------------------
+Error: Cannot find module
+Jalankan:
+npm install
+
+Error: Database connection failed
+Periksa DB_HOST, DB_USER, DB_PASSWORD, dan DB_NAME di file .env.
+
+Error: Application failed to start
+Pastikan startup file adalah:
+server.js
+
+Error: Karya tidak tersimpan
+Pastikan database.sql sudah di-import dan tabel works sudah ada.
+
+Gambar tidak tampil
+Pastikan folder public/uploads ada dan URL dibuka melalui domain hosting,
+bukan dengan membuka file HTML langsung.
+
+
+10. PERINTAH UPDATE PROJECT
+---------------------------
+Jika ada perubahan kode:
+
+1. Upload file terbaru.
+2. Jalankan:
+
+cd /home/USERNAME/satu-gamehub
+npm install
+npm run build
+
+3. Klik Restart Application di cPanel.
+
+
+CATATAN PENTING
+---------------
+- Project harus dijalankan dengan Node.js, bukan hanya hosting HTML biasa.
+- Jangan menaruh password database di file JavaScript.
+- Gunakan NODE_ENV=production saat hosting.
+- Node.js yang digunakan project ini minimal versi 20.9.0.

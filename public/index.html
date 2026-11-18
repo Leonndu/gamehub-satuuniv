@@ -1,0 +1,1672 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SATU GameHub — Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #160c0a;
+        --bg-2: #1e120e;
+        --panel: #241512;
+        --panel-2: #2c1a15;
+        --line: #3a221b;
+        --orange: #ff6900;
+        --orange-dim: #ff8a33;
+        --maroon: #9e3a31;
+        --maroon-light: #c85443;
+        --text: #f6ece5;
+        --text-dim: #c9b3a8;
+        --text-faint: #8a6f65;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      /* ---------- CUSTOM SCROLLBAR ---------- */
+      * {
+        scrollbar-width: thin;
+        scrollbar-color: var(--maroon) transparent;
+      }
+      *::-webkit-scrollbar {
+        width: 9px;
+        height: 9px;
+      }
+      *::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      *::-webkit-scrollbar-thumb {
+        background: linear-gradient(180deg, var(--maroon-light), var(--maroon));
+        border-radius: 999px;
+        border: 2px solid var(--bg);
+        background-clip: padding-box;
+      }
+      *::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(180deg, var(--orange-dim), var(--orange));
+        background-clip: padding-box;
+      }
+
+      body {
+        font-family: "Inter", sans-serif;
+        background:
+          radial-gradient(
+            circle at 85% -10%,
+            rgba(255, 105, 0, 0.18),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 0% 100%,
+            rgba(158, 58, 49, 0.25),
+            transparent 50%
+          ),
+          var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+      }
+      h1,
+      h2,
+      h3,
+      .brand-name {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      /* ---------- SIDEBAR ---------- */
+      .sidebar {
+        width: 260px;
+        flex-shrink: 0;
+        background: linear-gradient(180deg, #1c110d 0%, #150b09 100%);
+        border-right: 1px solid var(--line);
+        padding: 26px 18px;
+        display: flex;
+        flex-direction: column;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        z-index: 50;
+        transition: transform 0.25s ease;
+      }
+      .sidebar-close {
+        display: none;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 0 8px 28px;
+      }
+      .brand-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--orange), var(--maroon));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 4px 14px rgba(255, 105, 0, 0.35);
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-size: 17px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+      .brand-tag {
+        font-size: 11.5px;
+        color: var(--text-faint);
+        margin-top: 1px;
+      }
+
+      nav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+        overflow-y: auto;
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+        padding: 11px 14px;
+        border-radius: 10px;
+        color: var(--text-dim);
+        font-size: 14.5px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        border: 1px solid transparent;
+      }
+      .nav-item:hover {
+        background: rgba(255, 105, 0, 0.08);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: linear-gradient(
+          90deg,
+          rgba(255, 105, 0, 0.22),
+          rgba(158, 58, 49, 0.16)
+        );
+        color: #ffb27a;
+        border-color: rgba(255, 105, 0, 0.35);
+        font-weight: 600;
+      }
+      .nav-icon {
+        width: 18px;
+        text-align: center;
+        font-size: 15px;
+      }
+
+      /* backdrop shown behind the drawer on mobile */
+      .sidebar-backdrop {
+        display: none;
+      }
+
+      /* ---------- MAIN ---------- */
+      main {
+        flex: 1;
+        padding: 26px 40px 60px;
+        min-width: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        margin-bottom: 34px;
+      }
+      .menu-btn {
+        display: none;
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        color: var(--text);
+        font-size: 18px;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .search {
+        flex: 1;
+        max-width: 520px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px 16px;
+        color: var(--text-faint);
+        font-size: 14px;
+        min-width: 0;
+      }
+      .search input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-size: 14px;
+        width: 100%;
+        font-family: inherit;
+        min-width: 0;
+      }
+      .search input::placeholder {
+        color: var(--text-faint);
+      }
+      .topbar-right {
+        margin-left: auto;
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .profile {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+      }
+      .avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--orange), var(--maroon));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        flex-shrink: 0;
+      }
+      .profile-name {
+        font-size: 14px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+      .chev {
+        color: var(--text-faint);
+        font-size: 11px;
+      }
+
+      .page-head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        margin-bottom: 26px;
+        flex-wrap: wrap;
+        gap: 14px;
+      }
+      .page-head h1 {
+        font-size: 27px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .page-head p {
+        color: var(--text-faint);
+        font-size: 14px;
+        margin-top: 6px;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 20px;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 16px;
+        overflow: hidden;
+        transition:
+          transform 0.18s ease,
+          border-color 0.18s ease,
+          box-shadow 0.18s ease;
+        cursor: pointer;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(255, 105, 0, 0.45);
+        box-shadow: 0 14px 30px rgba(0, 0, 0, 0.4);
+      }
+      .thumb {
+        height: 120px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 44px;
+      }
+      .thumb-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .badge {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        color: #1a0d06;
+        background: rgba(255, 255, 255, 0.92);
+      }
+      .card-body {
+        padding: 14px 16px 16px;
+      }
+      .card-title {
+        font-size: 15px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+      .card-desc {
+        font-size: 12.3px;
+        color: var(--text-faint);
+        line-height: 1.5;
+        height: 56px;
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+      }
+      .card-stats {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 12px;
+        font-size: 12px;
+        color: var(--text-dim);
+        font-weight: 600;
+      }
+      .stat {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .stat.plays {
+        color: var(--orange-dim);
+      }
+      .stat.likes {
+        color: var(--maroon-light);
+      }
+
+      footer {
+        text-align: center;
+        margin-top: auto;
+        padding-top: 26px;
+        border-top: 1px solid var(--line);
+        color: var(--text-faint);
+        font-size: 12.5px;
+      }
+
+      @media (max-width: 1300px) {
+        .grid {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+
+      /* ---------- MOBILE: sidebar becomes a slide-in drawer, not display:none ---------- */
+      @media (max-width: 900px) {
+        .menu-btn {
+          display: flex;
+        }
+
+        .sidebar {
+          position: fixed;
+          left: 0;
+          top: 0;
+          height: 100dvh;
+          transform: translateX(-100%);
+          box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+        }
+        .sidebar.open {
+          transform: translateX(0);
+        }
+        .sidebar-close {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 34px;
+          height: 34px;
+          margin-left: auto;
+          border-radius: 9px;
+          background: var(--panel);
+          border: 1px solid var(--line);
+          color: var(--text-dim);
+          font-size: 15px;
+          cursor: pointer;
+          flex-shrink: 0;
+        }
+
+        .sidebar-backdrop {
+          display: block;
+          position: fixed;
+          inset: 0;
+          background: rgba(10, 5, 4, 0.6);
+          backdrop-filter: blur(2px);
+          z-index: 40;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.25s ease;
+        }
+        .sidebar-backdrop.open {
+          opacity: 1;
+          pointer-events: auto;
+        }
+
+        .grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        main {
+          padding: 20px 20px 50px;
+        }
+        .profile-name {
+          display: none;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .topbar {
+          gap: 10px;
+        }
+        .search {
+          padding: 11px 13px;
+          font-size: 13px;
+        }
+        .page-head h1 {
+          font-size: 22px;
+        }
+      }
+
+      /* ================= MODAL ================= */
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 5, 4, 0.72);
+        backdrop-filter: blur(3px);
+        z-index: 100;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+      }
+      .modal-backdrop.open {
+        display: flex;
+        opacity: 1;
+      }
+      .modal {
+        width: 100%;
+        max-width: 640px;
+        max-height: 92vh;
+        overflow-y: auto;
+        background: linear-gradient(180deg, var(--panel-2), var(--panel));
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        transform: translateY(14px) scale(0.98);
+        transition: transform 0.22s ease;
+      }
+      .modal-backdrop.open .modal {
+        transform: translateY(0) scale(1);
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        background: rgba(10, 5, 4, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: var(--text);
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+      }
+
+      /* ---- slider ---- */
+      .slider {
+        position: relative;
+        height: 240px;
+        overflow: hidden;
+        border-radius: 20px 20px 0 0;
+      }
+      .slider-track {
+        display: flex;
+        height: 100%;
+        transition: transform 0.35s ease;
+      }
+      .slide {
+        min-width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 72px;
+        position: relative;
+      }
+      .slide-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .slide::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 0) 55%,
+          rgba(20, 10, 8, 0.75) 100%
+        );
+      }
+      .slider-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: rgba(10, 5, 4, 0.55);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 15px;
+        z-index: 4;
+      }
+      .slider-nav.prev {
+        left: 12px;
+      }
+      .slider-nav.next {
+        right: 12px;
+      }
+      .slider-nav:hover {
+        background: rgba(255, 105, 0, 0.55);
+      }
+      .slider-dots {
+        position: absolute;
+        bottom: 12px;
+        left: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        gap: 6px;
+        z-index: 4;
+      }
+      .slider-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.35);
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .slider-dot.active {
+        background: var(--orange);
+        width: 18px;
+      }
+
+      /* ---- modal body ---- */
+      .modal-body {
+        padding: 22px 26px 26px;
+      }
+      .modal-top {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 6px;
+      }
+      .modal-title {
+        font-size: 21px;
+        font-weight: 700;
+      }
+      .modal-badge {
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        color: #1a0d06;
+        white-space: nowrap;
+        margin-top: 3px;
+      }
+      .modal-stats {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin: 10px 0 16px;
+        font-size: 12.5px;
+        color: var(--text-dim);
+        font-weight: 600;
+      }
+      .modal-desc {
+        font-size: 13.5px;
+        color: var(--text-dim);
+        line-height: 1.65;
+        margin-bottom: 20px;
+      }
+
+      /* ---- guide / panduan ---- */
+      .modal-guide {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        padding: 16px 18px;
+        margin-bottom: 22px;
+      }
+      .modal-guide-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14.5px;
+        font-weight: 700;
+        margin-bottom: 12px;
+      }
+      .guide-list {
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .guide-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--text-dim);
+        line-height: 1.55;
+      }
+      .guide-num {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        border-radius: 6px;
+        background: linear-gradient(135deg, var(--orange), var(--maroon));
+        color: #fff;
+        font-size: 11px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1px;
+      }
+
+      .modal-actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 22px;
+      }
+      .play-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        background: linear-gradient(135deg, var(--orange), var(--maroon));
+        color: #fff;
+        border: none;
+        padding: 13px 18px;
+        border-radius: 12px;
+        font-size: 14.5px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(255, 105, 0, 0.3);
+        transition:
+          transform 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .play-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px rgba(255, 105, 0, 0.4);
+      }
+      .like-btn {
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        color: var(--text-dim);
+        padding: 13px 18px;
+        border-radius: 12px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .like-btn:hover {
+        border-color: rgba(200, 84, 67, 0.5);
+      }
+      .like-btn.liked {
+        background: rgba(200, 84, 67, 0.18);
+        border-color: var(--maroon-light);
+        color: #ff9a8c;
+      }
+      .like-btn .heart {
+        font-size: 16px;
+        transition: transform 0.2s ease;
+      }
+      .like-btn.liked .heart {
+        transform: scale(1.15);
+      }
+
+      /* ---- comments ---- */
+      .comments-head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14.5px;
+        font-weight: 700;
+        margin-bottom: 14px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+      }
+      .comment-form {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 18px;
+      }
+      .comment-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: linear-gradient(135deg, var(--orange), var(--maroon));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .comment-input-wrap {
+        flex: 1;
+        display: flex;
+        gap: 8px;
+      }
+      .comment-input {
+        flex: 1;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 10px 14px;
+        color: var(--text);
+        font-size: 13px;
+        font-family: inherit;
+        outline: none;
+      }
+      .comment-input:focus {
+        border-color: rgba(255, 105, 0, 0.5);
+      }
+      .comment-send {
+        background: var(--orange);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 0 16px;
+        font-size: 13px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        flex-shrink: 0;
+      }
+      .comment-send:hover {
+        background: var(--orange-dim);
+      }
+
+      .comment-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        max-height: 260px;
+        overflow-y: auto;
+        padding-right: 4px;
+      }
+      .comment-item {
+        display: flex;
+        gap: 10px;
+      }
+      .comment-body {
+        flex: 1;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 13px;
+      }
+      .comment-author {
+        font-size: 12.5px;
+        font-weight: 700;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .comment-time {
+        font-size: 10.5px;
+        color: var(--text-faint);
+        font-weight: 500;
+      }
+      .comment-text {
+        font-size: 12.5px;
+        color: var(--text-dim);
+        margin-top: 4px;
+        line-height: 1.5;
+      }
+      .comment-empty {
+        font-size: 12.5px;
+        color: var(--text-faint);
+        text-align: center;
+        padding: 18px 0;
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">🎮</div>
+        <div>
+          <div class="brand-name">SATU GameHub</div>
+          <div class="brand-tag">Play. Learn. Create.</div>
+        </div>
+        <div class="sidebar-close" id="sidebar-close">✕</div>
+      </div>
+
+      <nav>
+        <div class="nav-item active">
+          <span class="nav-icon">🏠</span> Dashboard
+        </div>
+        <div class="nav-item"><span class="nav-icon">🎮</span> Semua Game</div>
+        <div class="nav-item"><span class="nav-icon">▦</span> Kategori</div>
+        <div class="nav-item"><span class="nav-icon">🏆</span> Peringkat</div>
+        <div class="nav-item"><span class="nav-icon">♡</span> Favorit</div>
+        <div class="nav-item"><span class="nav-icon">📁</span> Proyek Saya</div>
+        <div class="nav-item"><span class="nav-icon">👥</span> Komunitas</div>
+        <div class="nav-item"><span class="nav-icon">📊</span> Leaderboard</div>
+        <div class="nav-item"><span class="nav-icon">⚙</span> Pengaturan</div>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="topbar">
+        <div class="menu-btn" id="menu-btn">☰</div>
+        <div class="search">
+          🔍 <input id="search-input" type="text" placeholder="Cari game..." />
+        </div>
+        <div class="topbar-right">
+          <div class="profile">
+            <div class="avatar">👤</div>
+            <span class="profile-name">Halo, Mahasiswa</span>
+            <span class="chev">▾</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="page-head">
+        <div>
+          <h1>Game Tersedia 🎮</h1>
+          <p>Koleksi game seru hasil karya Mahasiswa SATU University</p>
+        </div>
+      </div>
+
+      <div class="grid" id="game-grid"></div>
+
+      <footer>🎮 Dibuat oleh Mahasiswa · SATU University Palembang</footer>
+    </main>
+
+    <!-- ================= MODAL ================= -->
+    <div class="modal-backdrop" id="modal-backdrop">
+      <div class="modal" id="modal" role="dialog" aria-modal="true">
+        <div class="modal-close" id="modal-close">✕</div>
+
+        <div class="slider" id="slider">
+          <div class="slider-track" id="slider-track"></div>
+          <div class="slider-nav prev" id="slider-prev">‹</div>
+          <div class="slider-nav next" id="slider-next">›</div>
+          <div class="slider-dots" id="slider-dots"></div>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-top">
+            <div class="modal-title" id="modal-title"></div>
+            <div class="modal-badge" id="modal-badge"></div>
+          </div>
+          <div class="modal-stats">
+            <div class="stat plays">
+              ▶ <span id="modal-plays"></span> dimainkan
+            </div>
+            <div class="stat likes">♡ <span id="modal-likes"></span> suka</div>
+          </div>
+          <div class="modal-desc" id="modal-desc"></div>
+
+          <div class="modal-guide" id="modal-guide">
+            <div class="modal-guide-head">📖 Panduan</div>
+            <ol class="guide-list" id="guide-list"></ol>
+          </div>
+
+          <div class="modal-actions">
+            <button class="play-btn" id="play-btn">▶ Main Sekarang</button>
+            <button class="like-btn" id="like-btn">
+              <span class="heart">♡</span><span id="like-count"></span>
+            </button>
+          </div>
+
+          <div class="comments-head">
+            💬 Komentar (<span id="comment-count">0</span>)
+          </div>
+
+          <div class="comment-form">
+            <div class="comment-avatar">👤</div>
+            <div class="comment-input-wrap">
+              <input
+                type="text"
+                class="comment-input"
+                id="comment-input"
+                placeholder="Tulis komentar..."
+              />
+              <button class="comment-send" id="comment-send">Kirim</button>
+            </div>
+          </div>
+
+          <div class="comment-list" id="comment-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      (async () => {
+        const likedOnly =
+          new URLSearchParams(window.location.search).get("liked") === "1";
+        const sidebarNav = document.querySelector("#sidebar nav");
+        sidebarNav.innerHTML = `
+        <a class="nav-item ${likedOnly ? "" : "active"}" href="/index.html"><span class="nav-icon">🏠</span> Dashboard</a>
+        <a class="nav-item ${likedOnly ? "active" : ""}" href="/index.html?liked=1"><span class="nav-icon">♥</span> Suka</a>
+      `;
+        fetch("/api/auth/me")
+          .then((response) => response.json())
+          .then((user) => {
+            const username = user.username || "User";
+            const initials = username
+              .trim()
+              .split(/\s+/)
+              .map((part) => part[0])
+              .join("")
+              .slice(0, 2)
+              .toUpperCase();
+            document.querySelector(".profile-name").textContent =
+              `Halo, ${username}`;
+            document.querySelector(".avatar").textContent = initials;
+            if (user.username?.toLowerCase() !== "leon") return;
+            sidebarNav.insertAdjacentHTML(
+              "beforeend",
+              '<a class="nav-item" href="/tambah-game.html"><span class="nav-icon">＋</span> Tambah Karya</a>',
+            );
+          });
+        const logoutButton = document.createElement("button");
+        logoutButton.id = "logout-btn";
+        logoutButton.textContent = "↪ Logout";
+        logoutButton.style.cssText =
+          "margin-top:auto;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--text-dim);font:500 14px Inter,sans-serif;cursor:pointer;text-align:left;";
+        document.getElementById("sidebar").appendChild(logoutButton);
+        logoutButton.addEventListener("click", async () => {
+          const result = await Swal.fire({
+            icon: "question",
+            title: "Logout dari GameHub?",
+            text: "Session kamu akan diakhiri.",
+            showCancelButton: true,
+            confirmButtonText: "Logout",
+            cancelButtonText: "Batal",
+            confirmButtonColor: "#ff6900",
+            background: "#241512",
+            color: "#f6ece5",
+          });
+          if (!result.isConfirmed) return;
+          try {
+            await fetch("/api/auth/logout", { method: "POST" });
+          } finally {
+            window.location.href = "/login.html";
+          }
+        });
+
+        window.alert = (message) =>
+          Swal.fire({
+            icon: "info",
+            title: "Informasi",
+            text: message,
+            confirmButtonColor: "#ff6900",
+            background: "#241512",
+            color: "#f6ece5",
+          });
+
+        let games = [
+          {
+            icon: "🚀",
+            grad: "linear-gradient(135deg,#3a1a4d,#1a0f2e)",
+            grad2: "linear-gradient(135deg,#4d2166,#221238)",
+            grad3: "linear-gradient(135deg,#20122e,#0f0918)",
+            title: "Space Defender",
+            cat: "Action",
+            catColor: "#ff8a33",
+            desc: "Lindungi galaksi dari serangan alien yang datang bertubi-tubi! Kumpulkan power-up, tingkatkan pesawatmu, dan hadapi boss raksasa di setiap level. Cocok dimainkan santai maupun untuk kejar skor tertinggi.",
+            guide: [
+              "Gunakan tombol panah / WASD untuk menggerakkan pesawat.",
+              "Tekan Spasi untuk menembak musuh yang datang.",
+              "Kumpulkan power-up berwarna untuk memperkuat senjata.",
+              "Hindari tabrakan dengan alien dan proyektilnya.",
+              "Kalahkan boss di akhir setiap level untuk naik ke level berikutnya.",
+            ],
+            plays: "1.2K",
+            likes: 256,
+            comments: [
+              {
+                author: "Rizky A.",
+                text: "Grafiknya keren, level 5 susah banget!",
+                time: "2 jam lalu",
+              },
+              {
+                author: "Dewi P.",
+                text: "Kontrolnya smooth, seru dimainkan di sela kuliah.",
+                time: "5 jam lalu",
+              },
+            ],
+          },
+          {
+            icon: "🌳",
+            grad: "linear-gradient(135deg,#2d5a3d,#173321)",
+            grad2: "linear-gradient(135deg,#37704a,#1c3f27)",
+            grad3: "linear-gradient(135deg,#1a4028,#0c2013)",
+            title: "Pixel Adventure",
+            cat: "Platformer",
+            catColor: "#5fd08a",
+            desc: "Petualangan seru di dunia pixel penuh rintangan dan harta karun. Jelajahi hutan, gua, dan reruntuhan kuno sambil mengumpulkan koin dan menghindari jebakan mematikan.",
+            guide: [
+              "Gunakan tombol panah untuk berjalan dan Spasi untuk melompat.",
+              "Kumpulkan koin di sepanjang level untuk menambah skor.",
+              "Hati-hati dengan jebakan duri dan jurang.",
+              "Cari peti harta karun tersembunyi untuk bonus poin.",
+              "Capai bendera di akhir level untuk menyelesaikan stage.",
+            ],
+            plays: "890",
+            likes: 180,
+            comments: [
+              {
+                author: "Budi S.",
+                text: "Nostalgia banget sama game jaman dulu.",
+                time: "1 hari lalu",
+              },
+            ],
+          },
+          {
+            icon: "💎",
+            grad: "linear-gradient(135deg,#2a2a45,#151526)",
+            grad2: "linear-gradient(135deg,#343458,#1a1a2c)",
+            grad3: "linear-gradient(135deg,#1f1f38,#0f0f1c)",
+            title: "Gem Match",
+            cat: "Puzzle",
+            catColor: "#7ea6ff",
+            desc: "Cocokkan permata warna-warni dan dapatkan skor tertinggi! Puzzle santai dengan combo spesial dan mode tantangan harian.",
+            guide: [
+              "Klik atau seret dua permata bersebelahan untuk menukar posisinya.",
+              "Susun 3 permata sewarna atau lebih dalam satu baris/kolom untuk mencocokkannya.",
+              "Cocokkan 4-5 permata sekaligus untuk mendapat combo spesial.",
+              "Selesaikan target skor sebelum langkah habis.",
+              "Mainkan mode tantangan harian untuk hadiah tambahan.",
+            ],
+            plays: "2.1K",
+            likes: 320,
+            comments: [
+              {
+                author: "Sari M.",
+                text: "Bikin nagih, tiap hari main buat combo baru.",
+                time: "3 jam lalu",
+              },
+              {
+                author: "Andi K.",
+                text: "Mode dailynya asik!",
+                time: "1 hari lalu",
+              },
+            ],
+          },
+          {
+            icon: "🏎️",
+            grad: "linear-gradient(135deg,#4d1f1a,#26100d)",
+            grad2: "linear-gradient(135deg,#66281f,#331410)",
+            grad3: "linear-gradient(135deg,#3a1712,#1d0b09)",
+            title: "Speed Racer",
+            cat: "Racing",
+            catColor: "#ff6900",
+            desc: "Balapan seru di berbagai track dengan lawan tangguh! Upgrade mobil, buka jalur rahasia, dan taklukkan leaderboard mingguan.",
+            guide: [
+              "Gunakan tombol panah atas/bawah untuk gas dan rem.",
+              "Gunakan panah kiri/kanan untuk berbelok.",
+              "Ambil koin di lintasan untuk upgrade mobil.",
+              "Cari jalur rahasia untuk memotong waktu tempuh.",
+              "Selesaikan balapan di posisi 1-3 untuk naik peringkat leaderboard.",
+            ],
+            plays: "1.5K",
+            likes: 210,
+            comments: [],
+          },
+          {
+            icon: "🐉",
+            grad: "linear-gradient(135deg,#1a2d4d,#0d1626)",
+            grad2: "linear-gradient(135deg,#213a63,#111d33)",
+            grad3: "linear-gradient(135deg,#13233d,#09111e)",
+            title: "Shadow Quest",
+            cat: "RPG",
+            catColor: "#c85443",
+            desc: "Jelajahi dunia fantasi dan kalahkan musuh dalam quest epik! Susun party, racik equipment, dan ungkap misteri di balik Shadow Realm.",
+            guide: [
+              "Susun party dari karakter yang tersedia sebelum memulai quest.",
+              "Jelajahi peta untuk menemukan musuh, NPC, dan item.",
+              "Racik equipment dari bahan yang dikumpulkan di toko crafting.",
+              "Gunakan skill sesuai elemen musuh untuk kerusakan maksimal.",
+              "Ikuti alur quest utama untuk mengungkap cerita Shadow Realm.",
+            ],
+            plays: "980",
+            likes: 165,
+            comments: [
+              {
+                author: "Fajar T.",
+                text: "Ceritanya dalem, ost-nya juga bagus.",
+                time: "6 jam lalu",
+              },
+            ],
+          },
+          {
+            icon: "🏡",
+            grad: "linear-gradient(135deg,#3d3319,#1e190c)",
+            grad2: "linear-gradient(135deg,#514420,#28220f)",
+            grad3: "linear-gradient(135deg,#2e2712,#161009)",
+            title: "Happy Farm",
+            cat: "Simulation",
+            catColor: "#e0b84d",
+            desc: "Kelola pertanianmu dan jadilah petani sukses! Tanam, panen, dan kembangkan lahan jadi desa yang ramai.",
+            guide: [
+              "Bajak lahan lalu tanam bibit yang kamu punya.",
+              "Siram tanaman secara berkala agar tumbuh lebih cepat.",
+              "Panen hasil tani saat sudah matang untuk mendapat koin.",
+              "Gunakan koin untuk membeli bibit baru dan bangunan.",
+              "Kembangkan lahan dan bangunan untuk membuka fitur desa baru.",
+            ],
+            plays: "760",
+            likes: 142,
+            comments: [],
+          },
+          {
+            icon: "🏰",
+            grad: "linear-gradient(135deg,#2e2e3a,#17171e)",
+            grad2: "linear-gradient(135deg,#3a3a4a,#1c1c25)",
+            grad3: "linear-gradient(135deg,#22222d,#101015)",
+            title: "Kingdom Tactics",
+            cat: "Strategy",
+            catColor: "#9fb3c8",
+            desc: "Rancang strategi terbaik untuk menaklukkan kerajaan musuh! Atur formasi pasukan dan manfaatkan medan perang.",
+            guide: [
+              "Atur formasi pasukan sebelum pertempuran dimulai.",
+              "Perhatikan jenis medan untuk keuntungan strategi (hutan, bukit, sungai).",
+              "Gerakkan unit secara bergiliran (turn-based) untuk menyerang atau bertahan.",
+              "Manfaatkan unit jarak jauh untuk menyerang tanpa terkena balasan.",
+              "Kalahkan seluruh pasukan musuh atau markas mereka untuk menang.",
+            ],
+            plays: "1.1K",
+            likes: 190,
+            comments: [
+              {
+                author: "Hendra W.",
+                text: "Strategi turn-based-nya bikin mikir keras, mantap.",
+                time: "4 jam lalu",
+              },
+            ],
+          },
+          {
+            icon: "🌀",
+            grad: "linear-gradient(135deg,#3a1a45,#1c0d22)",
+            grad2: "linear-gradient(135deg,#4d2260,#241030)",
+            grad3: "linear-gradient(135deg,#2b1433,#140a19)",
+            title: "Neon Maze",
+            cat: "Arcade",
+            catColor: "#d47bff",
+            desc: "Temukan jalan keluar dari labirin neon yang menantang! Efek visual neon dan musik synthwave menemani setiap langkahmu.",
+            guide: [
+              "Gunakan tombol panah untuk bergerak di dalam labirin.",
+              "Ikuti jalur bercahaya untuk menemukan petunjuk arah.",
+              "Hindari zona neon merah yang berbahaya.",
+              "Kumpulkan orb neon untuk membuka jalan pintas.",
+              "Temukan pintu keluar sebelum waktu habis.",
+            ],
+            plays: "680",
+            likes: 120,
+            comments: [],
+          },
+          {
+            icon: "🐦",
+            grad: "linear-gradient(135deg,#1a3a4d,#0d1e26)",
+            grad2: "linear-gradient(135deg,#204d66,#0f2733)",
+            grad3: "linear-gradient(135deg,#122c3a,#09161d)",
+            title: "Flappy Birdie",
+            cat: "Casual",
+            catColor: "#ffb700",
+            desc: "Terbang setinggi mungkin tanpa menabrak rintangan! Simple, adiktif, dan cocok untuk mengisi waktu luang.",
+            guide: [
+              "Tekan Spasi atau klik layar agar burung terbang naik.",
+              "Lepaskan agar burung turun perlahan karena gravitasi.",
+              "Terbang melewati celah pipa tanpa menyentuhnya.",
+              "Setiap pipa yang terlewati menambah 1 skor.",
+              "Coba kalahkan skor tertinggimu sendiri di setiap percobaan.",
+            ],
+            plays: "2.3K",
+            likes: 410,
+            comments: [
+              {
+                author: "Nadia R.",
+                text: "Simpel tapi susah banget skor tinggi wkwk.",
+                time: "30 menit lalu",
+              },
+              {
+                author: "Yusuf H.",
+                text: "High score aku 47, ada yang lebih tinggi?",
+                time: "2 jam lalu",
+              },
+            ],
+          },
+          {
+            icon: "🔤",
+            grad: "linear-gradient(135deg,#4d3a1a,#26200d)",
+            grad2: "linear-gradient(135deg,#664e22,#332710)",
+            grad3: "linear-gradient(135deg,#3a2c12,#1d1609)",
+            title: "Word Quest",
+            cat: "Word",
+            catColor: "#ffd166",
+            desc: "Asah kemampuan bahasamu dengan teka-teki kata seru! Ratusan level dengan tingkat kesulitan yang terus meningkat.",
+            guide: [
+              "Susun huruf yang tersedia menjadi kata yang valid.",
+              "Seret huruf ke kotak jawaban atau ketik langsung.",
+              "Gunakan petunjuk (hint) jika kesulitan menemukan kata.",
+              "Selesaikan semua kata dalam satu level untuk lanjut ke level berikutnya.",
+              "Kumpulkan bintang di setiap level untuk membuka level bonus.",
+            ],
+            plays: "540",
+            likes: 98,
+            comments: [],
+          },
+        ];
+
+        const worksResponse = await fetch("/api/works");
+        if (!worksResponse.ok)
+          throw new Error("Karya gagal dimuat dari database.");
+        const works = await worksResponse.json();
+        const visibleWorks = likedOnly
+          ? works.filter((work) => work.liked)
+          : works;
+        document.querySelector(".page-head h1").textContent = likedOnly
+          ? "Game yang Disukai ♥"
+          : "Game Tersedia 🎮";
+        document.querySelector(".page-head p").textContent = likedOnly
+          ? "Koleksi karya yang kamu beri like."
+          : "Koleksi game hasil karya Mahasiswa SATU University. Mainkan, beri like, dan tinggalkan komentar!";
+        const majorColors = {
+          "Teknik Informatika": "#7ea6ff",
+          "Sistem Informasi": "#5fd08a",
+          Kolaborasi: "#ff8a33",
+        };
+        games = visibleWorks.map((work) => {
+          const backgrounds = work.images.length
+            ? work.images.map((image) => `url("${image}") center/cover`)
+            : ["linear-gradient(135deg,#3a1a4d,#1a0f2e)"];
+          return {
+            id: work.id,
+            icon: "🎮",
+            grad: backgrounds[0],
+            grad2: backgrounds[1] || backgrounds[0],
+            grad3: backgrounds[2] || backgrounds[0],
+            image: work.images[0] || "",
+            images: work.images,
+            title: work.title,
+            gameUrl: work.game_url,
+            cat: work.major,
+            catColor: majorColors[work.major] || "#ff8a33",
+            desc: work.description,
+            guide: work.guides,
+            creators: work.creators,
+            plays: work.play_count || 0,
+            likes: work.likes || 0,
+            liked: work.liked,
+            comments: work.comments || [],
+          };
+        });
+
+        // per-game runtime state (like status, live counts, comments)
+        games.forEach((g) => {
+          g.liked = Boolean(g.liked);
+          g.likeCount = g.likes;
+        });
+
+        const grid = document.getElementById("game-grid");
+        grid.innerHTML = games
+          .map(
+            (g, i) => `
+  <div class="card" data-index="${i}">
+    <div class="thumb" style="background:${g.grad}">
+      <span class="badge" style="background:${g.catColor}">${g.cat}</span>
+      ${g.image ? `<img class="thumb-image" src="${g.image}" alt="${g.title}" />` : g.icon}
+    </div>
+    <div class="card-body">
+      <div class="card-title">${g.title}</div>
+      <div class="card-desc">${g.desc}</div>
+      <div class="card-stats">
+        <div class="stat plays">▶ <span class="plays-num" data-index="${i}">${g.plays}</span></div>
+        <div class="stat likes">♡ <span class="likes-num" data-index="${i}">${g.likeCount}</span></div>
+      </div>
+    </div>
+  </div>
+`,
+          )
+          .join("");
+
+        const searchInput = document.getElementById("search-input");
+        searchInput.addEventListener("input", () => {
+          const query = searchInput.value.trim().toLowerCase();
+          document.querySelectorAll(".card").forEach((card, index) => {
+            const game = games[index];
+            const searchableText = [
+              game.title,
+              game.desc,
+              game.cat,
+              ...(game.creators || []),
+            ]
+              .join(" ")
+              .toLowerCase();
+            card.style.display =
+              !query || searchableText.includes(query) ? "" : "none";
+          });
+        });
+
+        // Mobile drawer toggle
+        const sidebar = document.getElementById("sidebar");
+        const backdrop = document.getElementById("sidebar-backdrop");
+        const menuBtn = document.getElementById("menu-btn");
+        const closeBtn = document.getElementById("sidebar-close");
+
+        function openDrawer() {
+          sidebar.classList.add("open");
+          backdrop.classList.add("open");
+        }
+        function closeDrawer() {
+          sidebar.classList.remove("open");
+          backdrop.classList.remove("open");
+        }
+
+        menuBtn.addEventListener("click", openDrawer);
+        closeBtn.addEventListener("click", closeDrawer);
+        backdrop.addEventListener("click", closeDrawer);
+
+        document.querySelectorAll(".nav-item").forEach((item) => {
+          item.addEventListener("click", () => {
+            document
+              .querySelectorAll(".nav-item")
+              .forEach((n) => n.classList.remove("active"));
+            item.classList.add("active");
+            closeDrawer();
+          });
+        });
+
+        /* ================= MODAL LOGIC ================= */
+        const modalBackdrop = document.getElementById("modal-backdrop");
+        const modalCloseBtn = document.getElementById("modal-close");
+        const sliderTrack = document.getElementById("slider-track");
+        const sliderDots = document.getElementById("slider-dots");
+        const sliderPrev = document.getElementById("slider-prev");
+        const sliderNext = document.getElementById("slider-next");
+        const modalTitle = document.getElementById("modal-title");
+        const modalBadge = document.getElementById("modal-badge");
+        const modalPlays = document.getElementById("modal-plays");
+        const modalLikes = document.getElementById("modal-likes");
+        const modalDesc = document.getElementById("modal-desc");
+        const guideList = document.getElementById("guide-list");
+        const playBtn = document.getElementById("play-btn");
+        const likeBtn = document.getElementById("like-btn");
+        const likeCountEl = document.getElementById("like-count");
+        const commentCountEl = document.getElementById("comment-count");
+        const commentList = document.getElementById("comment-list");
+        const commentInput = document.getElementById("comment-input");
+        const commentSend = document.getElementById("comment-send");
+
+        let currentIndex = null;
+        let currentSlide = 0;
+
+        function renderSlider(g) {
+          const slides = g.images?.length ? g.images : [null];
+          sliderTrack.innerHTML = slides
+            .map((image, index) =>
+              image
+                ? `<div class="slide"><img class="slide-image" src="${image}" alt="${g.title} - gambar ${index + 1}" /></div>`
+                : `<div class="slide" style="background:${g.grad}">${g.icon}</div>`,
+            )
+            .join("");
+          sliderDots.innerHTML = slides
+            .map(
+              (_, i) =>
+                `<div class="slider-dot${i === 0 ? " active" : ""}" data-slide="${i}"></div>`,
+            )
+            .join("");
+          currentSlide = 0;
+          updateSliderPosition();
+        }
+
+        function updateSliderPosition() {
+          sliderTrack.style.transform = `translateX(-${currentSlide * 100}%)`;
+          document.querySelectorAll(".slider-dot").forEach((dot, i) => {
+            dot.classList.toggle("active", i === currentSlide);
+          });
+        }
+
+        function goToSlide(n) {
+          const total =
+            currentIndex === null ? 1 : games[currentIndex].images?.length || 1;
+          currentSlide = (n + total) % total;
+          updateSliderPosition();
+        }
+
+        sliderPrev.addEventListener("click", () => goToSlide(currentSlide - 1));
+        sliderNext.addEventListener("click", () => goToSlide(currentSlide + 1));
+        sliderDots.addEventListener("click", (e) => {
+          const dot = e.target.closest(".slider-dot");
+          if (!dot) return;
+          goToSlide(parseInt(dot.dataset.slide, 10));
+        });
+
+        function renderGuide(g) {
+          const steps = g.guide || [];
+          if (steps.length === 0) {
+            guideList.innerHTML = `<div class="comment-empty">Panduan belum tersedia untuk game ini.</div>`;
+            return;
+          }
+          guideList.innerHTML = steps
+            .map(
+              (step, i) => `
+      <li class="guide-item">
+        <span class="guide-num">${i + 1}</span>
+        <span>${step}</span>
+      </li>
+    `,
+            )
+            .join("");
+        }
+
+        function renderComments(g) {
+          commentCountEl.textContent = g.comments.length;
+          if (g.comments.length === 0) {
+            commentList.innerHTML = `<div class="comment-empty">Belum ada komentar. Jadi yang pertama! ✨</div>`;
+            return;
+          }
+          commentList.innerHTML = g.comments
+            .map(
+              (c) => `
+      <div class="comment-item">
+        <div class="comment-avatar">🙂</div>
+        <div class="comment-body">
+          <div class="comment-author">${c.author} <span class="comment-time">${c.time}</span></div>
+          <div class="comment-text">${c.text}</div>
+        </div>
+      </div>
+    `,
+            )
+            .join("");
+        }
+
+        function updateLikeUI(g) {
+          likeBtn.classList.toggle("liked", g.liked);
+          likeBtn.querySelector(".heart").textContent = g.liked ? "♥" : "♡";
+          likeCountEl.textContent = g.likeCount;
+          modalLikes.textContent = g.likeCount;
+          const cardLikeEl = document.querySelector(
+            `.likes-num[data-index="${currentIndex}"]`,
+          );
+          if (cardLikeEl) cardLikeEl.textContent = g.likeCount;
+        }
+
+        function openModal(index) {
+          currentIndex = index;
+          const g = games[index];
+
+          renderSlider(g);
+          modalTitle.textContent = g.title;
+          modalBadge.textContent = g.cat;
+          modalBadge.style.background = g.catColor;
+          modalPlays.textContent = g.plays;
+          modalDesc.textContent = g.desc;
+          renderGuide(g);
+          updateLikeUI(g);
+          renderComments(g);
+          commentInput.value = "";
+
+          modalBackdrop.classList.add("open");
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeModal() {
+          modalBackdrop.classList.remove("open");
+          document.body.style.overflow = "";
+          currentIndex = null;
+        }
+
+        grid.addEventListener("click", (e) => {
+          const card = e.target.closest(".card");
+          if (!card) return;
+          openModal(parseInt(card.dataset.index, 10));
+        });
+
+        modalCloseBtn.addEventListener("click", closeModal);
+        modalBackdrop.addEventListener("click", (e) => {
+          if (e.target === modalBackdrop) closeModal();
+        });
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape" && modalBackdrop.classList.contains("open")) {
+            closeModal();
+          }
+          if (modalBackdrop.classList.contains("open")) {
+            if (e.key === "ArrowRight") goToSlide(currentSlide + 1);
+            if (e.key === "ArrowLeft") goToSlide(currentSlide - 1);
+          }
+        });
+
+        playBtn.addEventListener("click", async () => {
+          if (currentIndex === null) return;
+          const g = games[currentIndex];
+          if (!g.gameUrl) {
+            Swal.fire({
+              icon: "warning",
+              title: "URL game belum tersedia",
+              confirmButtonColor: "#ff6900",
+              background: "#241512",
+              color: "#f6ece5",
+            });
+            return;
+          }
+          try {
+            const response = await fetch(`/api/works/${g.id}/play`, {
+              method: "POST",
+            });
+            const result = await response.json();
+            if (!response.ok)
+              throw new Error(result.message || "Jumlah play gagal disimpan.");
+            g.plays = result.plays;
+            modalPlays.textContent = result.plays;
+            document
+              .querySelectorAll(`.plays-num[data-index="${currentIndex}"]`)
+              .forEach((element) => {
+                element.textContent = result.plays;
+              });
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal mencatat play",
+              text: error.message,
+              confirmButtonColor: "#ff6900",
+              background: "#241512",
+              color: "#f6ece5",
+            });
+            return;
+          }
+          window.open(g.gameUrl, "_blank", "noopener,noreferrer");
+        });
+
+        likeBtn.addEventListener("click", async () => {
+          if (currentIndex === null) return;
+          const g = games[currentIndex];
+          try {
+            const response = await fetch(`/api/works/${g.id}/like`, {
+              method: "POST",
+            });
+            const result = await response.json();
+            if (!response.ok)
+              throw new Error(result.message || "Like gagal disimpan.");
+            g.liked = result.liked;
+            g.likeCount = result.likes;
+            updateLikeUI(g);
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: error.message,
+              confirmButtonColor: "#ff6900",
+              background: "#241512",
+              color: "#f6ece5",
+            });
+          }
+        });
+
+        async function addComment() {
+          if (currentIndex === null) return;
+          const text = commentInput.value.trim();
+          if (!text) return;
+          const g = games[currentIndex];
+          try {
+            const response = await fetch(`/api/works/${g.id}/comments`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ text }),
+            });
+            const result = await response.json();
+            if (!response.ok)
+              throw new Error(result.message || "Komentar gagal disimpan.");
+            g.comments.unshift(result);
+            commentInput.value = "";
+            renderComments(g);
+          } catch (error) {
+            Swal.fire({
+              icon: "error",
+              title: "Gagal",
+              text: error.message,
+              confirmButtonColor: "#ff6900",
+              background: "#241512",
+              color: "#f6ece5",
+            });
+          }
+        }
+
+        commentSend.addEventListener("click", addComment);
+        commentInput.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") addComment();
+        });
+      })();
+    </script>
+  </body>
+</html>

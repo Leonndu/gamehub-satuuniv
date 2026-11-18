@@ -1,0 +1,1837 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SATU GameHub — Tambah Game</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg: #160c0a;
+      --bg-2: #1e120e;
+      --panel: #241512;
+      --panel-2: #2c1a15;
+      --line: #3a221b;
+      --orange: #ff6900;
+      --orange-dim: #ff8a33;
+      --maroon: #9e3a31;
+      --maroon-light: #c85443;
+      --text: #f6ece5;
+      --text-dim: #c9b3a8;
+      --text-faint: #8a6f65;
+      --danger: #e05b55;
+      --success: #63c78b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      scrollbar-width: thin;
+      scrollbar-color: var(--maroon) transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 9px;
+      height: 9px;
+    }
+
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, var(--maroon-light), var(--maroon));
+      border-radius: 999px;
+      border: 2px solid var(--bg);
+      background-clip: padding-box;
+    }
+
+    body {
+      font-family: "Inter", sans-serif;
+      background:
+        radial-gradient(circle at 85% -10%, rgba(255, 105, 0, 0.18), transparent 45%),
+        radial-gradient(circle at 0% 100%, rgba(158, 58, 49, 0.25), transparent 50%),
+        var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+    }
+
+    h1, h2, h3, .brand-name {
+      font-family: "Space Grotesk", sans-serif;
+    }
+
+    button,
+    input,
+    textarea,
+    select {
+      font-family: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 260px;
+      flex-shrink: 0;
+      background: linear-gradient(180deg, #1c110d 0%, #150b09 100%);
+      border-right: 1px solid var(--line);
+      padding: 26px 18px;
+      display: flex;
+      flex-direction: column;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      z-index: 50;
+      transition: transform 0.25s ease;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 28px;
+    }
+
+    .brand-icon,
+    .avatar {
+      background: linear-gradient(135deg, var(--orange), var(--maroon));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      font-size: 20px;
+      box-shadow: 0 4px 14px rgba(255, 105, 0, 0.35);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .brand-tag {
+      font-size: 11.5px;
+      color: var(--text-faint);
+      margin-top: 1px;
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      padding: 11px 14px;
+      border-radius: 10px;
+      color: var(--text-dim);
+      font-size: 14.5px;
+      font-weight: 500;
+      transition: all 0.15s ease;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 105, 0, 0.08);
+      color: var(--text);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(255, 105, 0, 0.22), rgba(158, 58, 49, 0.16));
+      color: #ffb27a;
+      border-color: rgba(255, 105, 0, 0.35);
+      font-weight: 600;
+    }
+
+    .nav-icon {
+      width: 18px;
+      text-align: center;
+      font-size: 15px;
+    }
+
+    .sidebar-close {
+      display: none;
+      margin-left: auto;
+      width: 34px;
+      height: 34px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--text-dim);
+    }
+
+    .sidebar-backdrop {
+      display: none;
+    }
+
+    /* MAIN */
+    main {
+      flex: 1;
+      min-width: 0;
+      padding: 26px 40px 60px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 34px;
+    }
+
+    .menu-btn {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      color: var(--text);
+      font-size: 18px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .search {
+      flex: 1;
+      max-width: 520px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-faint);
+    }
+
+    .search input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .search input::placeholder {
+      color: var(--text-faint);
+    }
+
+    .topbar-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      font-size: 16px;
+    }
+
+    .profile-name {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .chev {
+      color: var(--text-faint);
+      font-size: 11px;
+    }
+
+    /* PAGE HEADER */
+    .page-head {
+      margin-bottom: 24px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-faint);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .breadcrumb span:last-child {
+      color: var(--orange-dim);
+    }
+
+    .page-head h1 {
+      font-size: 28px;
+      font-weight: 700;
+    }
+
+    .page-head p {
+      color: var(--text-faint);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    /* FORM */
+    .form-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 310px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, var(--panel-2), var(--panel));
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 20px;
+    }
+
+    .panel:last-child {
+      margin-bottom: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-number {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--orange), var(--maroon));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .panel-header h2 {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .panel-header p {
+      color: var(--text-faint);
+      font-size: 12px;
+      margin-top: 3px;
+      line-height: 1.5;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .required {
+      color: var(--orange);
+    }
+
+    input[type="text"],
+    input[type="url"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      background: #1b100d;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      outline: none;
+      color: var(--text);
+      font-size: 13.5px;
+      padding: 12px 13px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(255, 105, 0, 0.55);
+      box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.08);
+    }
+
+    input::placeholder,
+    textarea::placeholder {
+      color: #70574f;
+    }
+
+    select {
+      appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--text-faint) 50%),
+        linear-gradient(135deg, var(--text-faint) 50%, transparent 50%);
+      background-position:
+        calc(100% - 17px) 50%,
+        calc(100% - 12px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      padding-right: 36px;
+    }
+
+    textarea {
+      min-height: 120px;
+      resize: vertical;
+      line-height: 1.6;
+    }
+
+    .hint {
+      color: var(--text-faint);
+      font-size: 11.5px;
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
+    /* IMAGE UPLOAD */
+    .image-upload {
+      border: 1px dashed #5a3328;
+      border-radius: 12px;
+      background: #1b100d;
+      min-height: 180px;
+      padding: 18px;
+      position: relative;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .image-upload:hover,
+    .image-upload.dragover {
+      border-color: var(--orange);
+      background: rgba(255, 105, 0, 0.05);
+    }
+
+    .upload-content {
+      min-height: 142px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .upload-icon {
+      font-size: 34px;
+      margin-bottom: 9px;
+    }
+
+    .upload-content strong {
+      font-size: 13px;
+    }
+
+    .upload-content p {
+      color: var(--text-faint);
+      font-size: 11.5px;
+      margin-top: 5px;
+      margin-bottom: 12px;
+    }
+
+    .upload-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 105, 0, 0.12);
+      color: var(--orange-dim);
+      border: 1px solid rgba(255, 105, 0, 0.3);
+      padding: 8px 13px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .upload-btn:hover {
+      background: rgba(255, 105, 0, 0.2);
+    }
+
+    .image-preview {
+      display: none;
+      position: relative;
+    }
+
+    .image-preview img {
+      display: block;
+      width: 100%;
+      height: 210px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .remove-image {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      width: 32px;
+      height: 32px;
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 9px;
+      background: rgba(10,5,4,0.75);
+      color: #fff;
+      font-size: 14px;
+    }
+
+    .remove-image:hover {
+      background: var(--danger);
+    }
+
+    .secondary-images {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .small-upload {
+      min-height: 130px;
+    }
+
+    .small-upload .upload-content {
+      min-height: 92px;
+    }
+
+    .small-upload .upload-icon {
+      font-size: 24px;
+    }
+
+    .small-upload .image-preview img {
+      height: 130px;
+    }
+
+    /* GUIDE */
+    .guide-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .guide-item {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr) 38px;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .guide-number {
+      width: 34px;
+      height: 42px;
+      border-radius: 9px;
+      background: rgba(255, 105, 0, 0.11);
+      border: 1px solid rgba(255, 105, 0, 0.22);
+      color: var(--orange-dim);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .guide-item textarea {
+      min-height: 42px;
+      height: 42px;
+      resize: vertical;
+      padding-top: 11px;
+    }
+
+    .remove-guide {
+      width: 38px;
+      height: 42px;
+      border-radius: 9px;
+      border: 1px solid var(--line);
+      background: #1b100d;
+      color: var(--text-faint);
+    }
+
+    .remove-guide:hover {
+      color: #ff9a8c;
+      border-color: rgba(224, 91, 85, 0.45);
+      background: rgba(224, 91, 85, 0.08);
+    }
+
+    .add-guide {
+      margin-top: 14px;
+      border: 1px dashed #5a3328;
+      background: transparent;
+      color: var(--orange-dim);
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 9px;
+      font-size: 12.5px;
+      font-weight: 700;
+    }
+
+    .add-guide:hover {
+      border-color: var(--orange);
+      background: rgba(255, 105, 0, 0.05);
+    }
+
+    /* CHECKBOX */
+    .checkbox-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .check-option {
+      position: relative;
+    }
+
+    .check-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .check-option label {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 9px 12px;
+      border-radius: 9px;
+      background: #1b100d;
+      border: 1px solid var(--line);
+      color: var(--text-dim);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .check-option label::before {
+      content: "";
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid #604035;
+      background: #160c0a;
+    }
+
+    .check-option input:checked + label {
+      color: var(--orange-dim);
+      border-color: rgba(255, 105, 0, 0.4);
+      background: rgba(255, 105, 0, 0.08);
+    }
+
+    .check-option input:checked + label::before {
+      content: "✓";
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-color: var(--orange);
+      background: var(--orange);
+      color: #1a0d06;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    /* STATUS */
+    .status-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .status-option {
+      position: relative;
+    }
+
+    .status-option input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .status-option label {
+      margin: 0;
+      padding: 11px;
+      border: 1px solid var(--line);
+      background: #1b100d;
+      border-radius: 9px;
+      text-align: center;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .status-option input:checked + label {
+      color: var(--orange-dim);
+      border-color: rgba(255, 105, 0, 0.45);
+      background: rgba(255, 105, 0, 0.09);
+    }
+
+    /* SIDE INFO */
+    .sticky-side {
+      position: sticky;
+      top: 26px;
+    }
+
+    .preview-card {
+      overflow: hidden;
+      padding: 0;
+    }
+
+    .preview-thumb {
+      height: 165px;
+      background:
+        radial-gradient(circle at 70% 25%, rgba(255, 105, 0, 0.3), transparent 35%),
+        linear-gradient(135deg, #3a1a4d, #1a0f2e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 58px;
+      position: relative;
+    }
+
+    .preview-thumb::after {
+      content: "PREVIEW";
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.9);
+      color: #1a0d06;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .preview-body {
+      padding: 16px;
+    }
+
+    .preview-category {
+      color: var(--orange-dim);
+      font-size: 10.5px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .preview-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 7px;
+    }
+
+    .preview-desc {
+      color: var(--text-faint);
+      font-size: 11.5px;
+      line-height: 1.55;
+    }
+
+    .preview-creator {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      color: var(--text-dim);
+      font-size: 11.5px;
+    }
+
+    .preview-creator strong {
+      color: var(--text);
+    }
+
+    .info-box {
+      padding: 15px;
+      background: rgba(255, 105, 0, 0.06);
+      border: 1px solid rgba(255, 105, 0, 0.18);
+      border-radius: 12px;
+    }
+
+    .info-box h3 {
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .info-box ul {
+      padding-left: 17px;
+      color: var(--text-faint);
+      font-size: 11.5px;
+      line-height: 1.7;
+    }
+
+    /* ACTIONS */
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--line);
+    }
+
+    .btn {
+      border-radius: 10px;
+      padding: 11px 17px;
+      font-size: 13px;
+      font-weight: 700;
+      border: 1px solid var(--line);
+    }
+
+    .btn-secondary {
+      color: var(--text-dim);
+      background: var(--panel);
+    }
+
+    .btn-secondary:hover {
+      color: var(--text);
+      border-color: #5a3328;
+    }
+
+    .btn-primary {
+      color: #fff;
+      border-color: transparent;
+      background: linear-gradient(135deg, var(--orange), var(--maroon));
+      box-shadow: 0 8px 20px rgba(255, 105, 0, 0.22);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 11px 24px rgba(255, 105, 0, 0.3);
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      max-width: 360px;
+      background: #251713;
+      border: 1px solid rgba(99, 199, 139, 0.35);
+      border-left: 4px solid var(--success);
+      color: var(--text);
+      padding: 13px 16px;
+      border-radius: 11px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+      font-size: 13px;
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.25s ease;
+      z-index: 200;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 36px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line);
+      color: var(--text-faint);
+      font-size: 12px;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      .form-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .sticky-side {
+        position: static;
+      }
+
+      .preview-card {
+        max-width: none;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .menu-btn {
+        display: flex;
+      }
+
+      .sidebar {
+        position: fixed;
+        left: 0;
+        top: 0;
+        height: 100dvh;
+        transform: translateX(-100%);
+        box-shadow: 0 0 40px rgba(0,0,0,0.5);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .sidebar-close {
+        display: flex;
+      }
+
+      .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        background: rgba(10,5,4,0.6);
+        backdrop-filter: blur(2px);
+        z-index: 40;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.25s ease;
+      }
+
+      .sidebar-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      main {
+        padding: 20px 20px 50px;
+      }
+
+      .profile-name {
+        display: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .field.full {
+        grid-column: auto;
+      }
+
+      .panel {
+        padding: 17px;
+      }
+
+      .secondary-images {
+        grid-template-columns: 1fr;
+      }
+
+      .form-actions {
+        flex-direction: column-reverse;
+      }
+
+      .form-actions .btn {
+        width: 100%;
+      }
+
+      .page-head h1 {
+        font-size: 23px;
+      }
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-icon">🎮</div>
+      <div>
+        <div class="brand-name">SATU GameHub</div>
+        <div class="brand-tag">Play. Learn. Create.</div>
+      </div>
+      <button class="sidebar-close" id="sidebar-close" type="button">✕</button>
+    </div>
+
+    <nav>
+      <div class="nav-item">
+        <span class="nav-icon">🏠</span> Dashboard
+      </div>
+      <div class="nav-item active">
+        <span class="nav-icon">➕</span> Tambah Game
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🎮</span> Semua Game
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">▦</span> Kategori
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">🏆</span> Peringkat
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">📁</span> Proyek Saya
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">👥</span> Komunitas
+      </div>
+      <div class="nav-item">
+        <span class="nav-icon">⚙</span> Pengaturan
+      </div>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <button class="menu-btn" id="menu-btn" type="button">☰</button>
+
+      <div class="search">
+        🔍
+        <input type="text" placeholder="Cari game..." />
+      </div>
+
+      <div class="topbar-right">
+        <div class="profile">
+          <div class="avatar">👤</div>
+          <span class="profile-name">Halo, Mahasiswa</span>
+          <span class="chev">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-head">
+      <div class="breadcrumb">
+        <span>Dashboard</span>
+        <span>›</span>
+        <span>Tambah Game</span>
+      </div>
+
+      <h1>Tambah Game 🎮</h1>
+      <p>Tambahkan game baru ke koleksi SATU GameHub.</p>
+    </div>
+
+    <form id="game-form" novalidate>
+      <div class="form-layout">
+        <div>
+          <!-- INFORMASI GAME -->
+          <section class="panel">
+            <div class="panel-header">
+              <div class="panel-number">01</div>
+              <div>
+                <h2>Informasi Game</h2>
+                <p>Informasi utama yang akan ditampilkan pada dashboard dan halaman detail game.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field full">
+                <label for="title">Judul Game <span class="required">*</span></label>
+                <input id="title" name="title" type="text" placeholder="Contoh: Space Defender" required />
+              </div>
+
+              <div class="field">
+                <label for="category">Kategori <span class="required">*</span></label>
+                <select id="category" name="category" required>
+                  <option value="">Pilih kategori</option>
+                  <option>Action</option>
+                  <option>Adventure</option>
+                  <option>Arcade</option>
+                  <option>Casual</option>
+                  <option>Educational</option>
+                  <option>Platformer</option>
+                  <option>Puzzle</option>
+                  <option>Racing</option>
+                  <option>RPG</option>
+                  <option>Simulation</option>
+                  <option>Sports</option>
+                  <option>Strategy</option>
+                  <option>Word</option>
+                  <option>Lainnya</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="status">Status Publikasi <span class="required">*</span></label>
+                <div class="status-options">
+                  <div class="status-option">
+                    <input type="radio" id="draft" name="status" value="draft" />
+                    <label for="draft">Draft</label>
+                  </div>
+                  <div class="status-option">
+                    <input type="radio" id="published" name="status" value="published" checked />
+                    <label for="published">Published</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field full">
+                <label for="description">Deskripsi Game <span class="required">*</span></label>
+                <textarea id="description" name="description" placeholder="Jelaskan game, tujuan permainan, fitur utama, dan hal menarik lainnya..." required></textarea>
+                <div class="hint">Deskripsi ini akan ditampilkan pada halaman detail game.</div>
+              </div>
+
+              <div class="field">
+                <label for="game-url">URL / Link Game <span class="required">*</span></label>
+                <input id="game-url" name="game_url" type="url" placeholder="https://contoh.com/game" required />
+                <div class="hint">Link yang akan dibuka ketika pemain menekan "Main Sekarang".</div>
+              </div>
+
+              <div class="field">
+                <label for="version">Versi Game</label>
+                <input id="version" name="version" type="text" placeholder="Contoh: 1.0.0" value="1.0.0" />
+              </div>
+            </div>
+          </section>
+
+          <!-- GAMBAR -->
+          <section class="panel">
+            <div class="panel-header">
+              <div class="panel-number">02</div>
+              <div>
+                <h2>Gambar Game</h2>
+                <p>Gambar utama digunakan sebagai thumbnail. Tambahkan gambar lain untuk slider halaman detail.</p>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Gambar Utama <span class="required">*</span></label>
+
+              <div class="image-upload" id="main-upload">
+                <input type="file" id="main-image" name="main_image" accept="image/png,image/jpeg,image/webp" hidden />
+
+                <div class="upload-content" id="main-upload-content">
+                  <div class="upload-icon">🖼️</div>
+                  <strong>Upload gambar utama</strong>
+                  <p>PNG, JPG, atau WEBP · Maks. 5 MB</p>
+                  <label class="upload-btn" for="main-image">Pilih Gambar</label>
+                </div>
+
+                <div class="image-preview" id="main-preview">
+                  <img id="main-preview-img" alt="Preview gambar utama" />
+                  <button class="remove-image" type="button" data-input="main-image">✕</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="secondary-images">
+              <div class="field">
+                <label>Gambar Tambahan 1</label>
+
+                <div class="image-upload small-upload" id="secondary-upload-1">
+                  <input type="file" id="secondary-image-1" name="secondary_image_1" accept="image/png,image/jpeg,image/webp" hidden />
+
+                  <div class="upload-content" id="secondary-upload-content-1">
+                    <div class="upload-icon">📷</div>
+                    <strong>Gambar 2</strong>
+                    <p>Opsional · Maks. 5 MB</p>
+                    <label class="upload-btn" for="secondary-image-1">Pilih</label>
+                  </div>
+
+                  <div class="image-preview" id="secondary-preview-1">
+                    <img id="secondary-preview-img-1" alt="Preview gambar tambahan 1" />
+                    <button class="remove-image" type="button" data-input="secondary-image-1">✕</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Gambar Tambahan 2</label>
+
+                <div class="image-upload small-upload" id="secondary-upload-2">
+                  <input type="file" id="secondary-image-2" name="secondary_image_2" accept="image/png,image/jpeg,image/webp" hidden />
+
+                  <div class="upload-content" id="secondary-upload-content-2">
+                    <div class="upload-icon">📷</div>
+                    <strong>Gambar 3</strong>
+                    <p>Opsional · Maks. 5 MB</p>
+                    <label class="upload-btn" for="secondary-image-2">Pilih</label>
+                  </div>
+
+                  <div class="image-preview" id="secondary-preview-2">
+                    <img id="secondary-preview-img-2" alt="Preview gambar tambahan 2" />
+                    <button class="remove-image" type="button" data-input="secondary-image-2">✕</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- PEMBUAT -->
+          <section class="panel">
+            <div class="panel-header">
+              <div class="panel-number">03</div>
+              <div>
+                <h2>Informasi Pembuat</h2>
+                <p>Identitas mahasiswa atau kelompok yang membuat game.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="creator-name">Nama Pembuat <span class="required">*</span></label>
+                <input id="creator-name" name="creator_name" type="text" placeholder="Contoh: Leon Duta Effendy" required />
+              </div>
+
+              <div class="field">
+                <label for="creator-nim">NIM</label>
+                <input id="creator-nim" name="creator_nim" type="text" placeholder="Contoh: 202600123" />
+              </div>
+
+              <div class="field">
+                <label for="major">Jurusan <span class="required">*</span></label>
+                <select id="major" name="major" required>
+                  <option value="">Pilih jurusan</option>
+                  <option value="Teknik Informatika">Teknik Informatika</option>
+                  <option value="Sistem Informasi">Sistem Informasi</option>
+                  <option value="Kolaborasi">Kolaborasi</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="year">Tahun Pembuatan</label>
+                <input id="year" name="year" type="number" min="2000" max="2100" value="2026" />
+              </div>
+            </div>
+          </section>
+
+          <!-- PANDUAN -->
+          <section class="panel">
+            <div class="panel-header">
+              <div class="panel-number">04</div>
+              <div>
+                <h2>Panduan Bermain</h2>
+                <p>Tambahkan langkah-langkah cara bermain yang akan muncul di bagian Panduan.</p>
+              </div>
+            </div>
+
+            <div class="guide-list" id="guide-list">
+              <div class="guide-item">
+                <div class="guide-number">1</div>
+                <textarea name="guide[]" placeholder="Contoh: Gunakan tombol WASD untuk menggerakkan karakter..." required></textarea>
+                <button class="remove-guide" type="button" title="Hapus langkah">✕</button>
+              </div>
+
+              <div class="guide-item">
+                <div class="guide-number">2</div>
+                <textarea name="guide[]" placeholder="Contoh: Tekan Spasi untuk menyerang musuh..."></textarea>
+                <button class="remove-guide" type="button" title="Hapus langkah">✕</button>
+              </div>
+            </div>
+
+            <button class="add-guide" id="add-guide" type="button">＋ Tambah Langkah Panduan</button>
+          </section>
+
+          <!-- INFORMASI TAMBAHAN -->
+          <section class="panel">
+            <div class="panel-header">
+              <div class="panel-number">05</div>
+              <div>
+                <h2>Informasi Tambahan</h2>
+                <p>Informasi teknis dan kontrol yang membantu pengguna memahami game.</p>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field full">
+                <label for="technology">Teknologi yang Digunakan</label>
+                <input id="technology" name="technology" type="text" placeholder="Contoh: HTML, CSS, JavaScript, Phaser.js" />
+                <div class="hint">Pisahkan beberapa teknologi dengan koma.</div>
+              </div>
+
+              <div class="field full">
+                <label>Kontrol Game</label>
+
+                <div class="checkbox-grid">
+                  <div class="check-option">
+                    <input type="checkbox" id="keyboard" name="controls[]" value="Keyboard" checked />
+                    <label for="keyboard">Keyboard</label>
+                  </div>
+
+                  <div class="check-option">
+                    <input type="checkbox" id="mouse" name="controls[]" value="Mouse" />
+                    <label for="mouse">Mouse</label>
+                  </div>
+
+                  <div class="check-option">
+                    <input type="checkbox" id="touchscreen" name="controls[]" value="Touchscreen" />
+                    <label for="touchscreen">Touchscreen</label>
+                  </div>
+
+                  <div class="check-option">
+                    <input type="checkbox" id="gamepad" name="controls[]" value="Gamepad" />
+                    <label for="gamepad">Gamepad</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="field full">
+                <label for="notes">Catatan Tambahan</label>
+                <textarea id="notes" name="notes" placeholder="Contoh: Game membutuhkan browser modern atau koneksi internet..."></textarea>
+              </div>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button class="btn btn-secondary" type="reset" id="reset-btn">Reset</button>
+            <button class="btn btn-primary" type="submit">💾 Simpan Game</button>
+          </div>
+        </div>
+
+        <!-- SIDE PREVIEW -->
+        <aside class="sticky-side">
+          <section class="panel preview-card">
+            <div class="preview-thumb" id="preview-thumb">🎮</div>
+
+            <div class="preview-body">
+              <div class="preview-category" id="preview-category">Kategori</div>
+              <div class="preview-title" id="preview-title">Judul Game</div>
+              <div class="preview-desc" id="preview-desc">
+                Deskripsi game akan muncul di sini ketika kamu mengisinya.
+              </div>
+
+              <div class="preview-creator">
+                Dibuat oleh <strong id="preview-creator">Nama Pembuat</strong>
+                <br />
+                <span id="preview-major">Jurusan belum dipilih</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="info-box">
+              <h3>💡 Catatan</h3>
+              <ul>
+                <li>Field bertanda <strong>*</strong> wajib diisi.</li>
+                <li>Like, komentar, dan jumlah dimainkan tidak perlu diinput.</li>
+                <li>Jumlah dimainkan akan bertambah otomatis saat game dimainkan.</li>
+                <li>Like dan komentar akan dikelola oleh sistem.</li>
+                <li>Gunakan gambar yang jelas agar thumbnail terlihat bagus.</li>
+              </ul>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </form>
+
+    <footer>🎮 SATU GameHub · Play. Learn. Create.</footer>
+  </main>
+
+  <div class="toast" id="toast">Game berhasil disiapkan untuk disimpan.</div>
+
+  <script>
+    // =========================
+    // SIDEBAR MOBILE
+    // =========================
+    const sidebarNav = document.querySelector("#sidebar nav");
+    sidebarNav.innerHTML = `
+      <a class="nav-item" href="/index.html"><span class="nav-icon">🏠</span> Dashboard</a>
+      <a class="nav-item" href="/index.html?liked=1"><span class="nav-icon">♥</span> Suka</a>
+    `;
+    fetch("/api/auth/me")
+      .then((response) => response.json())
+      .then((user) => {
+        const username = user.username || "User";
+        const initials = username.trim().split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase();
+        document.querySelector(".profile-name").textContent = `Halo, ${username}`;
+        document.querySelector(".avatar").textContent = initials;
+        if (user.username?.toLowerCase() !== "leon") return;
+        sidebarNav.insertAdjacentHTML(
+          "beforeend",
+          '<a class="nav-item active" href="/tambah-game.html"><span class="nav-icon">＋</span> Tambah Karya</a>',
+        );
+      });
+    const logoutButton = document.createElement("button");
+    logoutButton.textContent = "↪ Logout";
+    logoutButton.style.cssText = "margin-top:auto;padding:11px 14px;border:1px solid var(--line);border-radius:10px;background:transparent;color:var(--text-dim);font:500 14px Inter,sans-serif;cursor:pointer;text-align:left;";
+    document.getElementById("sidebar").appendChild(logoutButton);
+    logoutButton.addEventListener("click", async () => {
+      const result = await Swal.fire({
+        icon: "question",
+        title: "Logout dari GameHub?",
+        showCancelButton: true,
+        confirmButtonText: "Logout",
+        cancelButtonText: "Batal",
+        confirmButtonColor: "#ff6900",
+        background: "#241512",
+        color: "#f6ece5",
+      });
+      if (!result.isConfirmed) return;
+      try {
+        await fetch("/api/auth/logout", { method: "POST" });
+      } finally {
+        window.location.href = "/login.html";
+      }
+    });
+
+    const sidebar = document.getElementById("sidebar");
+    const sidebarBackdrop = document.getElementById("sidebar-backdrop");
+    const menuBtn = document.getElementById("menu-btn");
+    const sidebarClose = document.getElementById("sidebar-close");
+
+    function openDrawer() {
+      sidebar.classList.add("open");
+      sidebarBackdrop.classList.add("open");
+    }
+
+    function closeDrawer() {
+      sidebar.classList.remove("open");
+      sidebarBackdrop.classList.remove("open");
+    }
+
+    menuBtn.addEventListener("click", openDrawer);
+    sidebarClose.addEventListener("click", closeDrawer);
+    sidebarBackdrop.addEventListener("click", closeDrawer);
+
+    document.querySelectorAll(".nav-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        document.querySelectorAll(".nav-item").forEach((nav) => {
+          nav.classList.remove("active");
+        });
+
+        item.classList.add("active");
+        closeDrawer();
+      });
+    });
+
+    // =========================
+    // GUIDE DYNAMIC FIELD
+    // =========================
+    const guideList = document.getElementById("guide-list");
+    const addGuideBtn = document.getElementById("add-guide");
+
+    function updateGuideNumbers() {
+      const items = guideList.querySelectorAll(".guide-item");
+
+      items.forEach((item, index) => {
+        item.querySelector(".guide-number").textContent = index + 1;
+      });
+    }
+
+    function addGuide() {
+      const item = document.createElement("div");
+      item.className = "guide-item";
+
+      item.innerHTML = `
+        <div class="guide-number"></div>
+        <textarea name="guide[]" placeholder="Masukkan langkah panduan..."></textarea>
+        <button class="remove-guide" type="button" title="Hapus langkah">✕</button>
+      `;
+
+      guideList.appendChild(item);
+      updateGuideNumbers();
+
+      item.querySelector("textarea").focus();
+    }
+
+    addGuideBtn.addEventListener("click", addGuide);
+
+    guideList.addEventListener("click", (event) => {
+      const removeButton = event.target.closest(".remove-guide");
+
+      if (!removeButton) return;
+
+      const items = guideList.querySelectorAll(".guide-item");
+
+      if (items.length <= 1) {
+        showToast("Minimal harus ada satu langkah panduan.");
+        return;
+      }
+
+      removeButton.closest(".guide-item").remove();
+      updateGuideNumbers();
+    });
+
+    // =========================
+    // IMAGE PREVIEW
+    // =========================
+    function setupImageUpload(inputId, previewId, contentId, previewImgId) {
+      const input = document.getElementById(inputId);
+      const preview = document.getElementById(previewId);
+      const content = document.getElementById(contentId);
+      const previewImg = document.getElementById(previewImgId);
+
+      input.addEventListener("change", () => {
+        const file = input.files[0];
+
+        if (!file) return;
+
+        if (file.size > 5 * 1024 * 1024) {
+          showToast("Ukuran gambar maksimal 5 MB.");
+          input.value = "";
+          return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+          previewImg.src = event.target.result;
+          content.style.display = "none";
+          preview.style.display = "block";
+
+          if (inputId === "main-image") {
+            document.getElementById("preview-thumb").style.backgroundImage =
+              `url("${event.target.result}")`;
+            document.getElementById("preview-thumb").style.backgroundSize = "cover";
+            document.getElementById("preview-thumb").style.backgroundPosition = "center";
+            document.getElementById("preview-thumb").textContent = "";
+          }
+        };
+
+        reader.readAsDataURL(file);
+      });
+    }
+
+    setupImageUpload(
+      "main-image",
+      "main-preview",
+      "main-upload-content",
+      "main-preview-img"
+    );
+
+    setupImageUpload(
+      "secondary-image-1",
+      "secondary-preview-1",
+      "secondary-upload-content-1",
+      "secondary-preview-img-1"
+    );
+
+    setupImageUpload(
+      "secondary-image-2",
+      "secondary-preview-2",
+      "secondary-upload-content-2",
+      "secondary-preview-img-2"
+    );
+
+    document.querySelectorAll(".remove-image").forEach((button) => {
+      button.addEventListener("click", () => {
+        const inputId = button.dataset.input;
+        const input = document.getElementById(inputId);
+
+        input.value = "";
+
+        const upload = button.closest(".image-upload");
+        const preview = upload.querySelector(".image-preview");
+        const content = upload.querySelector(".upload-content");
+
+        preview.style.display = "none";
+        content.style.display = "flex";
+
+        if (inputId === "main-image") {
+          const thumb = document.getElementById("preview-thumb");
+          thumb.style.backgroundImage = "";
+          thumb.textContent = "🎮";
+        }
+      });
+    });
+
+    // =========================
+    // DRAG & DROP
+    // =========================
+    document.querySelectorAll(".image-upload").forEach((area) => {
+      const input = area.querySelector('input[type="file"]');
+
+      area.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        area.classList.add("dragover");
+      });
+
+      area.addEventListener("dragleave", () => {
+        area.classList.remove("dragover");
+      });
+
+      area.addEventListener("drop", (event) => {
+        event.preventDefault();
+        area.classList.remove("dragover");
+
+        const files = event.dataTransfer.files;
+
+        if (!files.length) return;
+
+        input.files = files;
+        input.dispatchEvent(new Event("change"));
+      });
+    });
+
+    // =========================
+    // LIVE PREVIEW
+    // =========================
+    // =========================
+    // FORM SEDERHANA
+    // =========================
+    // Hanya tampilkan field yang diperlukan: judul, deskripsi, gambar,
+    // panduan, pembuat, dan jurusan.
+    ["category", "draft", "published", "version"].forEach((id) => {
+      const input = document.getElementById(id);
+      if (!input) return;
+      input.removeAttribute("required");
+      input.closest(".field").style.display = "none";
+    });
+
+    const extraPanel = [...document.querySelectorAll(".panel")].find((panel) =>
+      panel.querySelector("h2")?.textContent.includes("Informasi Tambahan"),
+    );
+    if (extraPanel) extraPanel.style.display = "none";
+
+    const secondaryImages = document.querySelector(".secondary-images");
+    const imageFields = [...secondaryImages.querySelectorAll(":scope > .field")];
+    imageFields.forEach((field, index) => {
+      field.style.display = "none";
+      field.querySelector('input[type="file"]').name = "images[]";
+    });
+    const addImageButton = document.createElement("button");
+    addImageButton.type = "button";
+    addImageButton.className = "add-guide";
+    addImageButton.textContent = "＋ Tambah Gambar";
+    secondaryImages.after(addImageButton);
+    let visibleImages = 0;
+    addImageButton.addEventListener("click", () => {
+      let imageField = imageFields[visibleImages];
+
+      if (!imageField) {
+        const number = visibleImages + 1;
+        imageField = imageFields[0].cloneNode(true);
+        imageField.querySelector("label").textContent = `Gambar Tambahan ${number}`;
+        imageField.querySelector("input").id = `secondary-image-${number}`;
+        imageField.querySelector("label.upload-btn").htmlFor = `secondary-image-${number}`;
+        imageField.querySelector("input").value = "";
+        imageField.querySelector("input").name = "images[]";
+        imageField.querySelector("input").setAttribute("onchange", "");
+        imageField.querySelector(".image-upload").id = `secondary-upload-${number}`;
+        imageField.querySelector(".upload-content").id = `secondary-upload-content-${number}`;
+        imageField.querySelector(".image-preview").id = `secondary-preview-${number}`;
+        imageField.querySelector(".image-preview img").id = `secondary-preview-img-${number}`;
+        imageField.querySelector(".image-preview img").src = "";
+        imageField.querySelector(".image-preview").style.display = "none";
+        imageField.querySelector(".upload-content").style.display = "flex";
+        imageField.querySelector(".remove-image").dataset.input = `secondary-image-${number}`;
+        secondaryImages.appendChild(imageField);
+        imageFields.push(imageField);
+        setupImageUpload(
+          `secondary-image-${number}`,
+          `secondary-preview-${number}`,
+          `secondary-upload-content-${number}`,
+          `secondary-preview-img-${number}`,
+        );
+        imageField.querySelector(".remove-image").addEventListener("click", () => {
+          const input = imageField.querySelector('input[type="file"]');
+          input.value = "";
+          imageField.querySelector(".image-preview").style.display = "none";
+          imageField.querySelector(".upload-content").style.display = "flex";
+        });
+      }
+
+      imageField.style.display = "block";
+      visibleImages += 1;
+    });
+
+    const creatorGrid = document.querySelector("#creator-name").closest(".form-grid");
+    const creatorFields = [...creatorGrid.querySelectorAll(".field")];
+    creatorFields.find((field) => field.querySelector("#creator-nim"))?.remove();
+    creatorFields.find((field) => field.querySelector("#year"))?.remove();
+    const creatorAddButton = document.createElement("button");
+    creatorAddButton.type = "button";
+    creatorAddButton.className = "add-guide";
+    creatorAddButton.textContent = "＋ Tambah Pembuat";
+    creatorGrid.after(creatorAddButton);
+    const creatorName = document.getElementById("creator-name");
+    const creatorMajor = document.getElementById("major");
+    creatorName.name = "creator_name[]";
+    creatorMajor.name = "major";
+    creatorAddButton.addEventListener("click", () => {
+      const nameField = creatorName.closest(".field").cloneNode(true);
+      const newInput = nameField.querySelector("input");
+      const number = creatorGrid.querySelectorAll('input[name="creator_name[]"]').length + 1;
+      newInput.value = "";
+      newInput.id = `creator-name-${number}`;
+      nameField.querySelector("label").htmlFor = newInput.id;
+      creatorGrid.append(nameField);
+    });
+
+    const titleInput = document.getElementById("title");
+    const categoryInput = document.getElementById("category");
+    const descriptionInput = document.getElementById("description");
+    const creatorInput = document.getElementById("creator-name");
+    const majorInput = document.getElementById("major");
+
+    titleInput.addEventListener("input", () => {
+      document.getElementById("preview-title").textContent =
+        titleInput.value.trim() || "Judul Game";
+    });
+
+    categoryInput.addEventListener("change", () => {
+      document.getElementById("preview-category").textContent =
+        categoryInput.value || "Kategori";
+    });
+
+    descriptionInput.addEventListener("input", () => {
+      document.getElementById("preview-desc").textContent =
+        descriptionInput.value.trim() ||
+        "Deskripsi game akan muncul di sini ketika kamu mengisinya.";
+    });
+
+    creatorInput.addEventListener("input", () => {
+      document.getElementById("preview-creator").textContent =
+        creatorInput.value.trim() || "Nama Pembuat";
+    });
+
+    majorInput.addEventListener("change", () => {
+      document.getElementById("preview-major").textContent =
+        majorInput.value || "Jurusan belum dipilih";
+    });
+
+    // =========================
+    // FORM SUBMIT
+    // =========================
+    const form = document.getElementById("game-form");
+    const toast = document.getElementById("toast");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(window.toastTimer);
+
+      window.toastTimer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2800);
+    }
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const requiredFields = form.querySelectorAll("[required]");
+      let valid = true;
+
+      requiredFields.forEach((field) => {
+        if (!field.value.trim()) {
+          valid = false;
+          field.focus();
+          field.style.borderColor = "rgba(224, 91, 85, 0.7)";
+
+          setTimeout(() => {
+            field.style.borderColor = "";
+          }, 1800);
+
+          return;
+        }
+      });
+
+      if (!valid) {
+        showToast("Lengkapi semua field yang wajib diisi.");
+        return;
+      }
+
+      const mainImage = document.getElementById("main-image");
+
+      if (!mainImage.files.length) {
+        showToast("Silakan pilih gambar utama game.");
+        document.getElementById("main-upload").scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+        return;
+      }
+
+      const submitButton = form.querySelector('button[type="submit"]');
+      submitButton.disabled = true;
+      try {
+        const response = await fetch("/api/works", {
+          method: "POST",
+          body: new FormData(form),
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || "Karya gagal disimpan.");
+        await Swal.fire({
+          icon: "success",
+          title: "Karya tersimpan",
+          text: result.message,
+          confirmButtonColor: "#ff6900",
+          background: "#241512",
+          color: "#f6ece5",
+        });
+        form.reset();
+      } catch (error) {
+        await Swal.fire({
+          icon: "error",
+          title: "Gagal menyimpan karya",
+          text: error.message || "Periksa koneksi database.",
+          confirmButtonColor: "#ff6900",
+          background: "#241512",
+          color: "#f6ece5",
+        });
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+
+    // =========================
+    // RESET
+    // =========================
+    document.getElementById("reset-btn").addEventListener("click", () => {
+      setTimeout(() => {
+        document.getElementById("preview-title").textContent = "Judul Game";
+        document.getElementById("preview-category").textContent = "Kategori";
+        document.getElementById("preview-desc").textContent =
+          "Deskripsi game akan muncul di sini ketika kamu mengisinya.";
+        document.getElementById("preview-creator").textContent = "Nama Pembuat";
+        document.getElementById("preview-major").textContent =
+          "Jurusan belum dipilih";
+
+        document.getElementById("main-preview").style.display = "none";
+        document.getElementById("main-upload-content").style.display = "flex";
+
+        document.getElementById("secondary-preview-1").style.display = "none";
+        document.getElementById("secondary-upload-content-1").style.display = "flex";
+
+        document.getElementById("secondary-preview-2").style.display = "none";
+        document.getElementById("secondary-upload-content-2").style.display = "flex";
+
+        document.getElementById("preview-thumb").style.backgroundImage = "";
+        document.getElementById("preview-thumb").textContent = "🎮";
+
+        // Kembalikan panduan menjadi 2 field awal.
+        guideList.innerHTML = `
+          <div class="guide-item">
+            <div class="guide-number">1</div>
+            <textarea name="guide[]" placeholder="Contoh: Gunakan tombol WASD untuk menggerakkan karakter..." required></textarea>
+            <button class="remove-guide" type="button" title="Hapus langkah">✕</button>
+          </div>
+
+          <div class="guide-item">
+            <div class="guide-number">2</div>
+            <textarea name="guide[]" placeholder="Contoh: Tekan Spasi untuk menyerang musuh..."></textarea>
+            <button class="remove-guide" type="button" title="Hapus langkah">✕</button>
+          </div>
+        `;
+      }, 0);
+    });
+  </script>
+</body>
+</html>

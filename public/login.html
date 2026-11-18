@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SATU GameHub — Masuk</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #160c0a;
+        --panel: #241512;
+        --panel-2: #2c1a15;
+        --line: #3a221b;
+        --orange: #ff6900;
+        --orange-dim: #ff8a33;
+        --maroon: #9e3a31;
+        --maroon-light: #c85443;
+        --text: #f6ece5;
+        --text-dim: #c9b3a8;
+        --text-faint: #8a6f65;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: "Inter", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        display: flex;
+      }
+      h1,
+      h2,
+      .brand-name {
+        font-family: "Space Grotesk", sans-serif;
+      }
+
+      /* ---------- LEFT: BRAND PANEL ---------- */
+      .brand-panel {
+        flex: 1.1;
+        position: relative;
+        overflow: hidden;
+        background:
+          radial-gradient(
+            circle at 20% 15%,
+            rgba(255, 105, 0, 0.28),
+            transparent 45%
+          ),
+          radial-gradient(
+            circle at 85% 85%,
+            rgba(158, 58, 49, 0.35),
+            transparent 50%
+          ),
+          linear-gradient(160deg, #1c110d 0%, #130a08 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 52px 56px;
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .brand-icon {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, var(--orange), var(--maroon));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 21px;
+        box-shadow: 0 4px 14px rgba(255, 105, 0, 0.35);
+        flex-shrink: 0;
+      }
+      .brand-name {
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .brand-tag {
+        font-size: 11.5px;
+        color: var(--text-faint);
+        margin-top: 1px;
+      }
+
+      .hero-copy {
+        max-width: 440px;
+        margin: auto 0;
+      }
+
+      .hero-copy h1 {
+        font-size: 38px;
+        line-height: 1.18;
+        font-weight: 700;
+        margin-bottom: 16px;
+      }
+      .hero-copy h1 span {
+        color: var(--orange-dim);
+      }
+      .hero-copy p {
+        font-size: 14.5px;
+        color: var(--text-dim);
+        line-height: 1.7;
+      }
+
+      .floating-tiles {
+        position: absolute;
+        right: -40px;
+        bottom: -30px;
+        display: grid;
+        grid-template-columns: repeat(3, 74px);
+        gap: 14px;
+        opacity: 0.9;
+        transform: rotate(-6deg);
+      }
+      .tile {
+        width: 74px;
+        height: 74px;
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+      }
+      .tile:nth-child(1) {
+        background: linear-gradient(135deg, #3a1a4d, #1a0f2e);
+      }
+      .tile:nth-child(2) {
+        background: linear-gradient(135deg, #1a3a4d, #0d1e26);
+        margin-top: 20px;
+      }
+      .tile:nth-child(3) {
+        background: linear-gradient(135deg, #4d1f1a, #26100d);
+      }
+      .tile:nth-child(4) {
+        background: linear-gradient(135deg, #2d5a3d, #173321);
+        margin-top: -10px;
+      }
+      .tile:nth-child(5) {
+        background: linear-gradient(135deg, #4d3a1a, #26200d);
+        margin-top: 14px;
+      }
+      .tile:nth-child(6) {
+        background: linear-gradient(135deg, #2a2a45, #151526);
+      }
+
+      .stats-row {
+        display: flex;
+        gap: 36px;
+        margin-top: 40px;
+      }
+      .stat-item .num {
+        font-size: 22px;
+        font-weight: 700;
+        font-family: "Space Grotesk", sans-serif;
+        color: var(--text);
+      }
+      .stat-item .lbl {
+        font-size: 12px;
+        color: var(--text-faint);
+        margin-top: 2px;
+      }
+
+      /* ---------- RIGHT: FORM PANEL ---------- */
+      .form-panel {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px;
+        background: #180e0b;
+      }
+      .form-wrap {
+        width: 100%;
+        max-width: 380px;
+      }
+      .form-head {
+        margin-bottom: 32px;
+      }
+      .form-head h2 {
+        font-size: 25px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .form-head p {
+        font-size: 13.5px;
+        color: var(--text-faint);
+      }
+      .form-head p a {
+        color: var(--orange-dim);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .field {
+        margin-bottom: 18px;
+      }
+      .field label {
+        display: block;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text-dim);
+        margin-bottom: 8px;
+      }
+      .input-box {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        padding: 13px 15px;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
+      }
+      .input-box:focus-within {
+        border-color: var(--orange);
+        box-shadow: 0 0 0 3px rgba(255, 105, 0, 0.15);
+      }
+      .input-box .ic {
+        font-size: 14px;
+        color: var(--text-faint);
+        flex-shrink: 0;
+      }
+      .input-box input {
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-size: 14px;
+        width: 100%;
+        font-family: inherit;
+      }
+      .input-box input::placeholder {
+        color: var(--text-faint);
+      }
+      .toggle-eye {
+        cursor: pointer;
+        color: var(--text-faint);
+        font-size: 14px;
+        user-select: none;
+      }
+
+      .btn-primary {
+        width: 100%;
+        padding: 14px 0;
+        border: none;
+        border-radius: 11px;
+        background: linear-gradient(90deg, var(--orange), #ff8a33);
+        color: #1a0d06;
+        font-weight: 700;
+        font-size: 14.5px;
+        cursor: pointer;
+        box-shadow: 0 10px 24px rgba(255, 105, 0, 0.32);
+        font-family: inherit;
+        transition: transform 0.15s ease;
+      }
+      .btn-primary:hover {
+        transform: translateY(-1px);
+      }
+
+      /* ---------- RESPONSIVE ---------- */
+      /* Tablet: shrink the hero copy and padding instead of dropping the panel */
+      @media (max-width: 1024px) {
+        .brand-panel {
+          padding: 40px 40px;
+        }
+        .hero-copy h1 {
+          font-size: 30px;
+        }
+        .floating-tiles {
+          grid-template-columns: repeat(3, 60px);
+          gap: 10px;
+        }
+        .tile {
+          width: 60px;
+          height: 60px;
+          font-size: 22px;
+        }
+      }
+
+      /* Mobile: stack panels. Brand panel becomes a short colorful header
+         instead of disappearing into flat black. */
+      @media (max-width: 760px) {
+        body {
+          display: block;
+          background: #130a08;
+        }
+
+        .brand-panel {
+          flex: none;
+          min-height: 0;
+          padding: 28px 24px 34px;
+          gap: 18px;
+        }
+
+        /* hide the big hero heading + tiles on small screens, keep it tight */
+        .hero-copy {
+          margin: 18px 0 0;
+          max-width: 100%;
+        }
+        .hero-copy h1 {
+          font-size: 22px;
+          margin-bottom: 8px;
+        }
+        .hero-copy p {
+          font-size: 13px;
+          line-height: 1.6;
+        }
+
+        .floating-tiles {
+          display: none;
+        }
+
+        .stats-row {
+          margin-top: 20px;
+          gap: 24px;
+        }
+        .stat-item .num {
+          font-size: 18px;
+        }
+        .stat-item .lbl {
+          font-size: 11px;
+        }
+
+        .form-panel {
+          padding: 28px 22px 44px;
+          background: #180e0b;
+          border-top: 1px solid var(--line);
+        }
+        .form-wrap {
+          max-width: 100%;
+        }
+        .form-head {
+          margin-bottom: 24px;
+        }
+        .form-head h2 {
+          font-size: 21px;
+        }
+      }
+
+      @media (max-width: 400px) {
+        .brand-panel {
+          padding: 22px 18px 26px;
+        }
+        .hero-copy h1 {
+          font-size: 19px;
+        }
+        .stats-row {
+          gap: 18px;
+        }
+      }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+  <body>
+    <section class="brand-panel">
+      <div class="brand">
+        <div class="brand-icon">🎮</div>
+        <div>
+          <div class="brand-name">SATU GameHub</div>
+          <div class="brand-tag">Play. Learn. Create.</div>
+        </div>
+      </div>
+
+      <div class="hero-copy">
+        <h1>Eksplorasi Karya, <span>mainkan inovasinya.</span></h1>
+        <p>
+          Platform untuk menampilkan, memainkan, dan mengapresiasi karya dari
+          Mahasiswa SATU University.
+        </p>
+
+        <div class="stats-row">
+          <div class="stat-item">
+            <div class="num">10</div>
+            <div class="lbl">Game aktif</div>
+          </div>
+          <div class="stat-item">
+            <div class="num">2.3K+</div>
+            <div class="lbl">Pemain</div>
+          </div>
+          <div class="stat-item">
+            <div class="num">30+</div>
+            <div class="lbl">Kreator</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="floating-tiles">
+        <div class="tile">🚀</div>
+        <div class="tile">🐦</div>
+        <div class="tile">🏎️</div>
+        <div class="tile">🌳</div>
+        <div class="tile">🔤</div>
+        <div class="tile">💎</div>
+      </div>
+    </section>
+
+    <section class="form-panel">
+      <div class="form-wrap">
+        <div class="form-head">
+          <h2>Selamat datang kembali 👋</h2>
+          <p>
+            Belum punya akun?
+            <a href="register.html">Daftar di sini</a>
+          </p>
+        </div>
+
+        <form id="login-form">
+          <div class="field">
+            <label for="username">Username</label>
+            <div class="input-box">
+              <span class="ic">👤</span>
+              <input
+                id="username"
+                type="text"
+                placeholder="Masukkan username"
+              />
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="password">Kata sandi</label>
+            <div class="input-box">
+              <span class="ic">🔒</span>
+              <input
+                id="password"
+                type="password"
+                placeholder="Masukkan kata sandi"
+              />
+              <span
+                class="toggle-eye"
+                onclick="
+                  const p = document.getElementById('password');
+                  p.type = p.type === 'password' ? 'text' : 'password';
+                "
+                >👁</span
+              >
+            </div>
+          </div>
+
+          <button class="btn-primary" type="submit" style="margin-top: 6px">
+            Masuk ke GameHub
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <script>
+      document.getElementById("login-form").addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const username = document.getElementById("username").value;
+        const password = document.getElementById("password").value;
+        try {
+          const response = await fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+          const result = await response.json();
+          if (!response.ok) throw new Error(result.message);
+          window.location.href = "/index.html";
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Login gagal",
+            text: error.message || "Username atau password salah.",
+            confirmButtonColor: "#ff6900",
+            background: "#241512",
+            color: "#f6ece5",
+          });
+        }
+      });
+    </script>
+  </body>
+</html>
